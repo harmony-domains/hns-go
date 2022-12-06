@@ -1,4 +1,4 @@
-module github.com/harmony-domains/hns-go/v0
+module github.com/harmony-domains/hns-go
 
 go 1.18
 

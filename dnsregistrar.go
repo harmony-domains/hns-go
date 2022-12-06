@@ -20,7 +20,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/harmony-domains/hns-go/v0/contracts/dnsregistrar"
+	"github.com/harmony-domains/hns-go/contracts/dnsregistrar"
 )
 
 // DNSRegistrar is the structure for the registrar

@@ -20,7 +20,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/harmony-domains/hns-go/v0"
+	"github.com/harmony-domains/hns-go"
 	"github.com/stretchr/testify/require"
 )
 

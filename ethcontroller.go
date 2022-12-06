@@ -24,7 +24,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/v0/contracts/ethcontroller"
+	"github.com/harmony-domains/hns-go/contracts/ethcontroller"
 )
 
 // ETHController is the structure for the .eth controller contract

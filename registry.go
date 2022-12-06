@@ -23,9 +23,9 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/v0/contracts/auctionregistrar"
-	"github.com/harmony-domains/hns-go/v0/contracts/registry"
-	"github.com/harmony-domains/hns-go/v0/util"
+	"github.com/harmony-domains/hns-go/contracts/auctionregistrar"
+	"github.com/harmony-domains/hns-go/contracts/registry"
+	"github.com/harmony-domains/hns-go/util"
 )
 
 // Registry is the structure for the registry contract

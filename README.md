@@ -24,7 +24,7 @@ Initial version copied from [go-ens](https://github.com/wealdtech/go-ens)
 `hns-go` is a standard Go module which can be installed with:
 
 ```sh
-go get github.com/harmony-domains/hns-go/v0
+go get github.com/harmony-domains/hns-go
 ```
 
 ## Usage
@@ -94,7 +94,7 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	hns "github.com/harmony-domains/hns-go/v0"
+	hns "github.com/harmony-domains/hns-go"
 )
 
 func main() {

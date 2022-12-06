@@ -18,7 +18,7 @@ package hns
 import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/harmony-domains/hns-go/v0/contracts/dnssecoracle"
+	"github.com/harmony-domains/hns-go/contracts/dnssecoracle"
 )
 
 // DNSSECOracle is the structure for the DNSSEC oracle
