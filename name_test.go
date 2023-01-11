@@ -15,38 +15,50 @@
 
 package hns
 
-// func TestName(t *testing.T) {
-// 	dsRegistrant := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
-// 	dsController := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
-// 	dsResolver := common.HexToAddress("DaaF96c344f63131acadD0Ea35170E7892d3dfBA")
-// 	dsExpiry := time.Unix(4741286688, 0)
-// 	dsRegistrationInterval := 60 * time.Second
+import (
+	"fmt"
+	"testing"
+)
 
-// 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-// 	name, err := NewName(client, "resolver.eth")
-// 	require.Nil(t, err, "Failed to create name")
+func TestName(t *testing.T) {
+	// viper.SetConfigFile(".env")
+	// viper.ReadInConfig()
+	// fmt.Println(viper.Get("PORT"))
+	config := getConfig()
+	fmt.Println(config.dsRegistrant)
+	fmt.Println(config)
 
-// 	registrant, err := name.Registrant()
-// 	require.Nil(t, err, "Failed to obtain registrant")
-// 	assert.Equal(t, dsRegistrant, registrant, "Failed to obtain correct registrant")
+	// 	dsRegistrant := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
+	// 	dsController := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
+	// 	dsResolver := common.HexToAddress("DaaF96c344f63131acadD0Ea35170E7892d3dfBA")
+	// 	dsExpiry := time.Unix(4741286688, 0)
+	// 	dsRegistrationInterval := 60 * time.Second
 
-// 	controller, err := name.Controller()
-// 	require.Nil(t, err, "Failed to obtain controller")
-// 	assert.Equal(t, dsController, controller, "Failed to obtain correct controller")
+	// 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
+	// 	name, err := NewName(client, "resolver.eth")
+	// 	require.Nil(t, err, "Failed to create name")
 
-// 	expiry, err := name.Expires()
-// 	require.Nil(t, err, "Failed to obtain expiry")
+	// 	registrant, err := name.Registrant()
+	// 	require.Nil(t, err, "Failed to obtain registrant")
+	// 	assert.Equal(t, dsRegistrant, registrant, "Failed to obtain correct registrant")
 
-// 	assert.Equal(t, dsExpiry, expiry, "Failed to obtain correct expiry")
+	// 	controller, err := name.Controller()
+	// 	require.Nil(t, err, "Failed to obtain controller")
+	// 	assert.Equal(t, dsController, controller, "Failed to obtain correct controller")
 
-// 	registrationInterval, err := name.RegistrationInterval()
-// 	require.Nil(t, err, "Failed to obtain registration interval")
-// 	assert.Equal(t, dsRegistrationInterval, registrationInterval, "Failed to obtain correct registration interval")
+	// 	expiry, err := name.Expires()
+	// 	require.Nil(t, err, "Failed to obtain expiry")
 
-// 	resolverAddress, err := name.ResolverAddress()
-// 	require.Nil(t, err, "Failed to obtain resolver address")
-// 	assert.Equal(t, dsResolver, resolverAddress, "Failed to obtain correct resolver address")
-// }
+	// 	assert.Equal(t, dsExpiry, expiry, "Failed to obtain correct expiry")
+
+	// 	registrationInterval, err := name.RegistrationInterval()
+	// 	require.Nil(t, err, "Failed to obtain registration interval")
+	// 	assert.Equal(t, dsRegistrationInterval, registrationInterval, "Failed to obtain correct registration interval")
+
+	// resolverAddress, err := name.ResolverAddress()
+	// require.Nil(t, err, "Failed to obtain resolver address")
+	// assert.Equal(t, dsResolver, resolverAddress, "Failed to obtain correct resolver address")
+}
 
 // func TestNameExpiry(t *testing.T) {
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
