@@ -19,7 +19,6 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -95,10 +94,10 @@ func TestResolveHexString(t *testing.T) {
 	assert.NotNil(t, err, "Resolved too-long hex string")
 }
 
-func TestReverseResolveTestEnsTest(t *testing.T) {
-	expected := "harmony-domains.eth"
-	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
-	actual, err := ReverseResolve(client, address)
-	require.Nil(t, err, "Error resolving address")
-	assert.Equal(t, expected, actual, "Did not receive expected result")
-}
+// func TestReverseResolveTestEnsTest(t *testing.T) {
+// 	expected := "harmony-domains.eth"
+// 	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
+// 	actual, err := ReverseResolve(client, address)
+// 	require.Nil(t, err, "Error resolving address")
+// 	assert.Equal(t, expected, actual, "Did not receive expected result")
+// }

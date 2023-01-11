@@ -204,8 +204,8 @@ func TestUnqualifiedName(t *testing.T) {
 			name:   "",
 		},
 		{
-			domain: "harmony-domains.eth",
-			root:   "eth",
+			domain: "harmony-domains.country",
+			root:   "country",
 			name:   "harmony-domains",
 		},
 	}
