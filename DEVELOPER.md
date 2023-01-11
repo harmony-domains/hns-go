@@ -2,7 +2,7 @@
 
 ## Development Approach
 
-For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-hns](https://github.com/jw-ens-domains/coredns-hns) which interacts with [hns-go](https://github.com/jw-ens-domains/hns-go) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [hns-go](https://github.com/jw-ens-domains/hns-go) will have a focus of looking up dns entries using the dnsresolver and registry contracts. We will also create ethcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
+For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-hns](https://github.com/jw-ens-domains/coredns-hns) which interacts with [hns-go](https://github.com/jw-ens-domains/hns-go) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [hns-go](https://github.com/jw-ens-domains/hns-go) will have a focus of looking up dns entries using the PubliceRsolver and ENSregistry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
 
 ## Geting Started 
 
@@ -44,19 +44,19 @@ To update our contracts to the latest abi we can copy the abi from [ens-deployer
 
 ```
 cd contracts
-mkdir dnsresolver
-//go:generate abigen -abi contract.abi -out contract.go -pkg dnsresolver -type Contract
+mkdir publicresolver
+//go:generate abigen -abi contract.abi -out contract.go -pkg publicresolver -type Contract
 ```
 
 Following is an example for updating `dnsresolver`
 
 ```
-cd contracts/dnsresolver/
+cd contracts/publicresolver/
 cp ../../../ens-deployer/contract/abi/PublicResolver.json contract.abi
 go generate
 ```
 
-After this we will need to add and update the corresponding calls to the contract. Typically there is a corresponding file such as `dnsresolver.go` which needs to be updated to reflect the changes we have just made to the contract (e.g. `contracts/dnsresolver.go`).
+After this we will need to add and update the corresponding calls to the contract. Typically there is a corresponding file such as `publicresolver.go` which needs to be updated to reflect the changes we have just made to the contract (e.g. `contracts/publicresolver.go`).
 
 We then need to build and fix any compilation errors.
 

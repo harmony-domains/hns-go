@@ -27,7 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/resolver"
+	"github.com/harmony-domains/hns-go/contracts/publicresolver"
 )
 
 var zeroHash = make([]byte, 32)
@@ -35,14 +35,14 @@ var zeroHash = make([]byte, 32)
 // UnknownAddress is the address to which unknown entries resolve
 var UnknownAddress = common.HexToAddress("00")
 
-// Resolver is the structure for the resolver contract
+// Resolver is the structure for the public resolver contract
 type Resolver struct {
-	Contract     *resolver.Contract
+	Contract     *publicresolver.Contract
 	ContractAddr common.Address
 	domain       string
 }
 
-// NewResolver obtains an ENS resolver for a given domain
+// NewResolver obtains an Public resolver for a given domain
 func NewResolver(backend bind.ContractBackend, domain string) (*Resolver, error) {
 	registry, err := NewRegistry(backend)
 	if err != nil {
@@ -68,7 +68,7 @@ func NewResolver(backend bind.ContractBackend, domain string) (*Resolver, error)
 
 // NewResolverAt obtains an ENS resolver at a given address
 func NewResolverAt(backend bind.ContractBackend, domain string, address common.Address) (*Resolver, error) {
-	contract, err := resolver.NewContract(address, backend)
+	contract, err := publicresolver.NewContract(address, backend)
 	if err != nil {
 		return nil, err
 	}
@@ -108,13 +108,13 @@ func (r *Resolver) Address() (common.Address, error) {
 }
 
 // SetAddress sets the Ethereum address of the domain
-func (r *Resolver) SetAddress(opts *bind.TransactOpts, address common.Address) (*types.Transaction, error) {
-	nameHash, err := NameHash(r.domain)
-	if err != nil {
-		return nil, err
-	}
-	return r.Contract.SetAddr(opts, nameHash, address)
-}
+// func (r *Resolver) SetAddress(opts *bind.TransactOpts, address common.Address) (*types.Transaction, error) {
+// 	nameHash, err := NameHash(r.domain)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return r.Contract.SetAddr(opts, nameHash, address)
+// }
 
 // MultiAddress returns the address of the domain for a given coin type.
 // The coin type is as per https://github.com/satoshilabs/slips/blob/master/slip-0044.md
@@ -128,13 +128,13 @@ func (r *Resolver) MultiAddress(coinType uint64) ([]byte, error) {
 
 // SetMultiAddress sets the iaddress of the domain for a given coin type.
 // The coin type is as per https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-func (r *Resolver) SetMultiAddress(opts *bind.TransactOpts, coinType uint64, address []byte) (*types.Transaction, error) {
-	nameHash, err := NameHash(r.domain)
-	if err != nil {
-		return nil, err
-	}
-	return r.Contract.SetAddr0(opts, nameHash, big.NewInt(int64(coinType)), address)
-}
+// func (r *Resolver) SetMultiAddress(opts *bind.TransactOpts, coinType uint64, address []byte) (*types.Transaction, error) {
+// 	nameHash, err := NameHash(r.domain)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return r.Contract.SetAddr0(opts, nameHash, big.NewInt(int64(coinType)), address)
+// }
 
 // PubKey returns the public key of the domain
 func (r *Resolver) PubKey() ([32]byte, [32]byte, error) {

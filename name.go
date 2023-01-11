@@ -16,15 +16,9 @@
 package hns
 
 import (
-	"crypto/rand"
-	"errors"
-	"fmt"
-	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 )
 
 // Name represents an ENS name, for example 'foo.bar.eth'.
@@ -37,9 +31,9 @@ type Name struct {
 	// Label is the name part of an ENS domain e.g. foo
 	Label string
 	// Contracts
-	registry   *Registry
-	registrar  *BaseRegistrar
-	controller *ETHController
+	registry *Registry
+	// registrar  *BaseRegistrar
+	controller *RegistrarController
 }
 
 // NewName creates an ENS name structure.
@@ -59,64 +53,64 @@ func NewName(backend bind.ContractBackend, name string) (*Name, error) {
 	if err != nil {
 		return nil, err
 	}
-	registrar, err := NewBaseRegistrar(backend, domain)
-	if err != nil {
-		return nil, err
-	}
-	controller, err := NewETHController(backend, domain)
-	if err != nil {
-		return nil, err
-	}
+	// registrar, err := NewBaseRegistrar(backend, domain)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// controller, err := NewRegistrarController(backend, domain)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	isValid, err := controller.IsValid(name)
-	if err != nil {
-		return nil, err
-	}
-	if !isValid {
-		return nil, errors.New("name is not valid according to the rules of the registrar (too short, invalid characters, etc.)")
-	}
+	// isValid, err := controller.IsValid(name)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if !isValid {
+	// 	return nil, errors.New("name is not valid according to the rules of the registrar (too short, invalid characters, etc.)")
+	// }
 
 	return &Name{
-		backend:    backend,
-		Name:       name,
-		Domain:     domain,
-		Label:      label,
-		registry:   registry,
-		registrar:  registrar,
-		controller: controller,
+		backend:  backend,
+		Name:     name,
+		Domain:   domain,
+		Label:    label,
+		registry: registry,
+		// registrar:  registrar,
+		// controller: controller,
 	}, nil
 }
 
 // IsRegistered returns true if the name is registered in the registrar
-func (n *Name) IsRegistered() (bool, error) {
-	registrant, err := n.Registrant()
-	if err != nil {
-		return false, err
-	}
-	return registrant != UnknownAddress, nil
-}
+// func (n *Name) IsRegistered() (bool, error) {
+// 	registrant, err := n.Registrant()
+// 	if err != nil {
+// 		return false, err
+// 	}
+// 	return registrant != UnknownAddress, nil
+// }
 
 // ExtendRegistration sends a transaction that extends the registration of the name.
-func (n *Name) ExtendRegistration(opts *bind.TransactOpts) (*types.Transaction, error) {
-	isRegistered, err := n.IsRegistered()
-	if err != nil {
-		return nil, err
-	}
-	if !isRegistered {
-		return nil, errors.New("name is not registered")
-	}
+// func (n *Name) ExtendRegistration(opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	isRegistered, err := n.IsRegistered()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if !isRegistered {
+// 		return nil, errors.New("name is not registered")
+// 	}
 
-	rentCost, err := n.RentCost()
-	if err != nil {
-		return nil, err
-	}
+// 	rentCost, err := n.RentCost()
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	if opts.Value == nil || opts.Value.Cmp(rentCost) < 0 {
-		return nil, errors.New("not enough funds to extend the registration")
-	}
+// 	if opts.Value == nil || opts.Value.Cmp(rentCost) < 0 {
+// 		return nil, errors.New("not enough funds to extend the registration")
+// 	}
 
-	return n.controller.Renew(opts, n.Name)
-}
+// 	return n.controller.Renew(opts, n.Name)
+// }
 
 // RegistrationInterval obtains the minimum interval between commit and reveal
 // when registering this name.
@@ -129,187 +123,186 @@ func (n *Name) RegistrationInterval() (time.Duration, error) {
 }
 
 // RegisterStageOne sends a transaction that starts the registration process.
-func (n *Name) RegisterStageOne(registrant common.Address, opts *bind.TransactOpts) (*types.Transaction, [32]byte, error) {
-	var secret [32]byte
-	_, err := rand.Read(secret[:])
-	if err != nil {
-		return nil, secret, err
-	}
+// func (n *Name) RegisterStageOne(registrant common.Address, opts *bind.TransactOpts) (*types.Transaction, [32]byte, error) {
+// 	var secret [32]byte
+// 	_, err := rand.Read(secret[:])
+// 	if err != nil {
+// 		return nil, secret, err
+// 	}
 
-	isRegistered, err := n.IsRegistered()
-	if err != nil {
-		return nil, secret, err
-	}
-	if isRegistered {
-		return nil, secret, errors.New("name is already registered")
-	}
+// 	isRegistered, err := n.IsRegistered()
+// 	if err != nil {
+// 		return nil, secret, err
+// 	}
+// 	if isRegistered {
+// 		return nil, secret, errors.New("name is already registered")
+// 	}
 
-	signedTx, err := n.controller.Commit(opts, n.Label, registrant, secret)
-	return signedTx, secret, err
-}
+// 	signedTx, err := n.controller.Commit(opts, n.Label, registrant, secret)
+// 	return signedTx, secret, err
+// }
 
 // RegisterStageTwo sends a transaction that completes the registration process.
 // The registrant must be the same as supplied in RegisterStageOne.
 // The secret is that returned by RegisterStageOne.
 // At least RegistrationInterval() time must have passed since the stage one
 // transaction was mined for this to work.
-func (n *Name) RegisterStageTwo(registrant common.Address, secret [32]byte, opts *bind.TransactOpts) (*types.Transaction, error) {
-	commitTS, err := n.controller.CommitmentTime(n.Label, registrant, secret)
-	if err != nil {
-		return nil, err
-	}
-	if commitTS.Cmp(big.NewInt(0)) == 0 {
-		return nil, errors.New("stage 2 attempted prior to successful stage 1 transaction")
-	}
-	commit := time.Unix(commitTS.Int64(), 0)
+// func (n *Name) RegisterStageTwo(registrant common.Address, secret [32]byte, opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	commitTS, err := n.controller.CommitmentTime(n.Label, registrant, secret)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if commitTS.Cmp(big.NewInt(0)) == 0 {
+// 		return nil, errors.New("stage 2 attempted prior to successful stage 1 transaction")
+// 	}
+// 	commit := time.Unix(commitTS.Int64(), 0)
 
-	minCommitIntervalTS, err := n.controller.MinCommitmentInterval()
-	if err != nil {
-		return nil, err
-	}
-	minCommitInterval := time.Duration(minCommitIntervalTS.Int64()) * time.Second
-	minStageTwoTime := commit.Add(minCommitInterval)
-	if time.Now().Before(minStageTwoTime) {
-		return nil, errors.New("too early to send second transaction")
-	}
+// 	minCommitIntervalTS, err := n.controller.MinCommitmentInterval()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	minCommitInterval := time.Duration(minCommitIntervalTS.Int64()) * time.Second
+// 	minStageTwoTime := commit.Add(minCommitInterval)
+// 	if time.Now().Before(minStageTwoTime) {
+// 		return nil, errors.New("too early to send second transaction")
+// 	}
 
-	maxCommitIntervalTS, err := n.controller.MaxCommitmentInterval()
-	if err != nil {
-		return nil, err
-	}
-	maxCommitInterval := time.Duration(maxCommitIntervalTS.Int64()) * time.Second
-	maxStageTwoTime := commit.Add(maxCommitInterval)
-	if time.Now().After(maxStageTwoTime) {
-		return nil, errors.New("too late to send second transaction")
-	}
+// 	maxCommitIntervalTS, err := n.controller.MaxCommitmentInterval()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	maxCommitInterval := time.Duration(maxCommitIntervalTS.Int64()) * time.Second
+// 	maxStageTwoTime := commit.Add(maxCommitInterval)
+// 	if time.Now().After(maxStageTwoTime) {
+// 		return nil, errors.New("too late to send second transaction")
+// 	}
 
-	return n.controller.Reveal(opts, n.Label, registrant, secret)
-}
+// 	return n.controller.Reveal(opts, n.Label, registrant, secret)
+// }
 
 // Expires obtain the time at which the registration for this name expires.
-func (n *Name) Expires() (time.Time, error) {
-	expiryTS, err := n.registrar.Expiry(n.Label)
-	if err != nil {
-		return time.Unix(0, 0), err
-	}
+// func (n *Name) Expires() (time.Time, error) {
+// 	expiryTS, err := n.registrar.Expiry(n.Label)
+// 	if err != nil {
+// 		return time.Unix(0, 0), err
+// 	}
 
-	if expiryTS.Int64() == 0 {
-		return time.Unix(0, 0), errors.New("not registered")
-	}
+// 	if expiryTS.Int64() == 0 {
+// 		return time.Unix(0, 0), errors.New("not registered")
+// 	}
 
-	return time.Unix(expiryTS.Int64(), 0), nil
-}
+// 	return time.Unix(expiryTS.Int64(), 0), nil
+// }
 
 // Controller obtains the controller for this name.
 // The controller can carry out operations on the name such as setting
 // records, but cannot transfer ultimate ownership of the name.
-func (n *Name) Controller() (common.Address, error) {
-	return n.registry.Owner(n.Name)
-}
+// func (n *Name) Controller() (common.Address, error) {
+// 	return n.registry.Owner(n.Name)
+// }
 
 // SetController sets the controller for this name.
 // The controller can carry out operations on the name such as setting
 // records, but cannot transfer ultimate ownership of the name.
-func (n *Name) SetController(controller common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
-	// Are we the current controller?
-	curController, err := n.Controller()
-	if err != nil {
-		return nil, err
-	}
-	if curController == opts.From {
-		return n.registry.SetOwner(opts, n.Name, controller)
-	}
+// func (n *Name) SetController(controller common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
+// Are we the current controller?
+// 	curController, err := n.Controller()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if curController == opts.From {
+// 		return n.registry.SetOwner(opts, n.Name, controller)
+// 	}
 
-	// Perhaps we are the registrant
-	registrant, err := n.Registrant()
-	if err != nil {
-		return nil, err
-	}
-	// Are we actually trying to reclaim?
-	if registrant == opts.From && opts.From == controller {
-		return n.Reclaim(opts)
-	}
+// 	// Perhaps we are the registrant
+// 	registrant, err := n.Registrant()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// Are we actually trying to reclaim?
+// 	if registrant == opts.From && opts.From == controller {
+// 		return n.Reclaim(opts)
+// 	}
 
-	return nil, errors.New("not authorised to change the controller")
-}
+// 	return nil, errors.New("not authorised to change the controller")
+// }
 
 // Reclaim reclaims controller rights by the registrant
-func (n *Name) Reclaim(opts *bind.TransactOpts) (*types.Transaction, error) {
-	// Ensure the we are the registrant
-	registrant, err := n.Registrant()
-	if err != nil {
-		return nil, err
-	}
-	if registrant != opts.From {
-		return nil, errors.New("not the registrant")
-	}
-	return n.registrar.Reclaim(opts, n.Name, registrant)
-}
+// func (n *Name) Reclaim(opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	// Ensure the we are the registrant
+// 	registrant, err := n.Registrant()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if registrant != opts.From {
+// 		return nil, errors.New("not the registrant")
+// 	}
+// 	return n.registrar.Reclaim(opts, n.Name, registrant)
+// }
 
 // Registrant obtains the registrant for this name.
-func (n *Name) Registrant() (common.Address, error) {
-	return n.registrar.Owner(n.Label)
-}
+// func (n *Name) Registrant() (common.Address, error) {
+// 	return n.registrar.Owner(n.Label)
+// }
 
 // Transfer transfers the registration of this name to a new registrant.
-func (n *Name) Transfer(registrant common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
-	// Ensure the we are the registrant
-	currentRegistrant, err := n.Registrant()
-	if err != nil {
-		return nil, err
-	}
-	if currentRegistrant != opts.From {
-		return nil, errors.New("not the current registrant")
-	}
-	return n.registrar.SetOwner(opts, n.Label, registrant)
-}
+// func (n *Name) Transfer(registrant common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	// Ensure the we are the registrant
+// 	currentRegistrant, err := n.Registrant()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if currentRegistrant != opts.From {
+// 		return nil, errors.New("not the current registrant")
+// 	}
+// 	return n.registrar.SetOwner(opts, n.Label, registrant)
+// }
 
-// RentCost returns the cost of rent in Wei-per-second.
-func (n *Name) RentCost() (*big.Int, error) {
-	return n.controller.RentCost(n.Label)
-}
+// // RentCost returns the cost of rent in Wei-per-second.
+// func (n *Name) RentCost() (*big.Int, error) {
+// 	return n.controller.RentCost(n.Label)
+// }
 
 // CreateSubdomain creates a subdomain on the name.
-func (n *Name) CreateSubdomain(label string, controller common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
-	// Confirm the subdomain does not already exist
-	fqdn := fmt.Sprintf("%s.%s", label, n.Name)
-	subdomainController, err := n.registry.Owner(fqdn)
-	if err != nil {
-		return nil, err
-	}
-	if subdomainController != UnknownAddress {
-		return nil, errors.New("that subdomain already exists")
-	}
+// func (n *Name) CreateSubdomain(label string, controller common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	// Confirm the subdomain does not already exist
+// 	fqdn := fmt.Sprintf("%s.%s", label, n.Name)
+// 	subdomainController, err := n.registry.Owner(fqdn)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if subdomainController != UnknownAddress {
+// 		return nil, errors.New("that subdomain already exists")
+// 	}
 
-	return n.registry.SetSubdomainOwner(opts, n.Name, label, controller)
-}
+// 	return n.registry.SetSubdomainOwner(opts, n.Name, label, controller)
+// }
 
 // ResolverAddress fetches the address of the resolver contract for the name.
-func (n *Name) ResolverAddress() (common.Address, error) {
-	return n.registry.ResolverAddress(n.Name)
-}
+// func (n *Name) ResolverAddress() (common.Address, error) {
+// 	return n.registry.ResolverAddress(n.Name)
+// }
 
 // SetResolverAddress sets the resolver contract address for the name.
-func (n *Name) SetResolverAddress(address common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
-	return n.registry.SetResolver(opts, n.Name, address)
-}
+// func (n *Name) SetResolverAddress(address common.Address, opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	return n.registry.SetResolver(opts, n.Name, address)
+// }
 
 // Address fetches the address of the name for a given coin type.
 // Coin types are defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-func (n *Name) Address(coinType uint64) ([]byte, error) {
-	resolver, err := NewResolver(n.backend, n.Name)
-	if err != nil {
-		return nil, err
-	}
-	return resolver.MultiAddress(coinType)
-}
+// func (n *Name) Address(coinType uint64) ([]byte, error) {
+// 	resolver, err := NewResolver(n.backend, n.Name)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return resolver.MultiAddress(coinType)
+// }
 
 // SetAddress sets the address of the name for a given coin type.
 // Coin types are defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-func (n *Name) SetAddress(coinType uint64, address []byte, opts *bind.TransactOpts) (*types.Transaction, error) {
-	resolver, err := NewResolver(n.backend, n.Name)
-	if err != nil {
-		return nil, err
-	}
-	return resolver.SetMultiAddress(opts, coinType, address)
-}
+// func (n *Name) SetAddress(coinType uint64, address []byte, opts *bind.TransactOpts) (*types.Transaction, error) {
+// 	resolver, err := NewResolver(n.backend, n.Name)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// return publicresolver.SetMultiAddress(opts, coinType, address)

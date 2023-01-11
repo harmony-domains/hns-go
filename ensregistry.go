@@ -16,22 +16,20 @@
 package hns
 
 import (
-	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/auctionregistrar"
-	"github.com/harmony-domains/hns-go/contracts/registry"
+	"github.com/harmony-domains/hns-go/contracts/ensregistry"
 	"github.com/harmony-domains/hns-go/util"
 )
 
-// Registry is the structure for the registry contract
+// Registry is the structure for the ensregistry contract
 type Registry struct {
 	backend      bind.ContractBackend
-	Contract     *registry.Contract
+	Contract     *ensregistry.Contract
 	ContractAddr common.Address
 }
 
@@ -46,7 +44,7 @@ func NewRegistry(backend bind.ContractBackend) (*Registry, error) {
 
 // NewRegistryAt obtains the ENS registry at a given address
 func NewRegistryAt(backend bind.ContractBackend, address common.Address) (*Registry, error) {
-	contract, err := registry.NewContract(address, backend)
+	contract, err := ensregistry.NewContract(address, backend)
 	if err != nil {
 		return nil, err
 	}
@@ -124,19 +122,19 @@ func RegistryContractAddress(backend bind.ContractBackend) (common.Address, erro
 
 // RegistryContractFromRegistrar obtains the registry contract given an
 // existing registrar contract
-func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *auctionregistrar.Contract) (*registry.Contract, error) {
-	if registrar == nil {
-		return nil, errors.New("no registrar contract")
-	}
-	registryAddress, err := registrar.Ens(nil)
-	if err != nil {
-		return nil, err
-	}
-	return registry.NewContract(registryAddress, backend)
-}
+// func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *auctionregistrar.Contract) (*registry.Contract, error) {
+// 	if registrar == nil {
+// 		return nil, errors.New("no registrar contract")
+// 	}
+// 	registryAddress, err := registrar.Ens(nil)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return registry.NewContract(registryAddress, backend)
+// }
 
 // SetResolver sets the resolver for a name
-func SetResolver(session *registry.ContractSession, name string, resolverAddr *common.Address) (*types.Transaction, error) {
+func SetResolver(session *ensregistry.ContractSession, name string, resolverAddr *common.Address) (*types.Transaction, error) {
 	nameHash, err := NameHash(name)
 	if err != nil {
 		return nil, err
@@ -145,7 +143,7 @@ func SetResolver(session *registry.ContractSession, name string, resolverAddr *c
 }
 
 // SetSubdomainOwner sets the owner for a subdomain of a name
-func SetSubdomainOwner(session *registry.ContractSession, name string, subdomain string, ownerAddr *common.Address) (*types.Transaction, error) {
+func SetSubdomainOwner(session *ensregistry.ContractSession, name string, subdomain string, ownerAddr *common.Address) (*types.Transaction, error) {
 	nameHash, err := NameHash(name)
 	if err != nil {
 		return nil, err
@@ -158,12 +156,12 @@ func SetSubdomainOwner(session *registry.ContractSession, name string, subdomain
 }
 
 // CreateRegistrySession creates a session suitable for multiple calls
-func CreateRegistrySession(chainID *big.Int, wallet *accounts.Wallet, account *accounts.Account, passphrase string, contract *registry.Contract, gasPrice *big.Int) *registry.ContractSession {
+func CreateRegistrySession(chainID *big.Int, wallet *accounts.Wallet, account *accounts.Account, passphrase string, contract *ensregistry.Contract, gasPrice *big.Int) *ensregistry.ContractSession {
 	// Create a signer
 	signer := util.AccountSigner(chainID, wallet, account, passphrase)
 
 	// Return our session
-	session := &registry.ContractSession{
+	session := &ensregistry.ContractSession{
 		Contract: contract,
 		CallOpts: bind.CallOpts{
 			Pending: true,
