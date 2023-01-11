@@ -14,6 +14,7 @@
 // limitations under the License.
 
 /*
+Following is a list of errors, events and public functions for registrarcontroller
 [
   "constructor(address,address,uint256,uint256,address,address,bytes32,string)",
   "error CommitmentTooNew(bytes32)",
