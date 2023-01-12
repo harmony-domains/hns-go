@@ -2,7 +2,7 @@
 
 ## Development Approach
 
-For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-hns](https://github.com/jw-ens-domains/coredns-hns) which interacts with [hns-go](https://github.com/jw-ens-domains/hns-go) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [hns-go](https://github.com/jw-ens-domains/hns-go) will have a focus of looking up dns entries using the PubliceRsolver and ENSregistry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
+For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-1ns](https://github.com/jw-ens-domains/coredns-1ns) which interacts with [go-1ns](https://github.com/jw-ens-domains/go-1ns) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [go-1ns](https://github.com/jw-ens-domains/go-1ns) will have a focus of looking up dns entries using the PubliceRsolver and ENSregistry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
 
 ## Geting Started 
 
@@ -11,8 +11,8 @@ Clone the repository
 
 ```
 # Clone the repository
-git clone https://github.com/jw-ens-domains/hns-go.git
-cd hns-go
+git clone https://github.com/jw-ens-domains/go-1ns.git
+cd go-1ns
 
 # update the dependencies
 go get -u ./...

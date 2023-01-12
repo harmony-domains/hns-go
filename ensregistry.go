@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"math/big"
@@ -22,8 +22,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/ensregistry"
-	"github.com/harmony-domains/hns-go/util"
+	"github.com/jw-1ns/go-1ns/contracts/ensregistry"
+	"github.com/jw-1ns/go-1ns/util"
 )
 
 // Registry is the structure for the ensregistry contract

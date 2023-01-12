@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 // var client, _ = ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
@@ -59,9 +59,9 @@ package hns
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
-// func TestResolveNickJohnson(t *testing.T) {
+// func TestResolveNickJo1nson(t *testing.T) {
 // 	expected := "70abd981e01ad3e6eb1726a5001000877ab04417"
-// 	actual, err := Resolve(client, "nickjohnson.eth")
+// 	actual, err := Resolve(client, "nickjo1nson.eth")
 // 	require.Nil(t, err, "Error resolving name")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
@@ -86,7 +86,7 @@ package hns
 // }
 
 // func TestReverseResolveTestEnsTest(t *testing.T) {
-// 	expected := "harmony-domains.eth"
+// 	expected := "1ns.eth"
 // 	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
 // 	actual, err := ReverseResolve(client, address)
 // 	require.Nil(t, err, "Error resolving address")

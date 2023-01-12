@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"testing"
@@ -295,7 +295,7 @@ func TestName(t *testing.T) {
 // 	name, err := NewName(client, "foobar5.eth")
 // 	require.Nil(t, err, "Failed to create name")
 
-// 	sub := "hns-go-test-1331354196"
+// 	sub := "go-1ns-test-1331354196"
 
 // 	opts, err := generateTxOpts(client, dsRegistrant, "0")
 // 	require.Nil(t, err, "Failed to generate transaction options")
@@ -563,7 +563,7 @@ func TestName(t *testing.T) {
 // 	registry, _ := NewRegistry(client)
 // 	for {
 // 		// #nosec G404
-// 		domain := fmt.Sprintf("hns-go-test-%d.eth", rand.Int31())
+// 		domain := fmt.Sprintf("go-1ns-test-%d.eth", rand.Int31())
 // 		controller, _ := registry.Owner(domain)
 // 		if controller == UnknownAddress {
 // 			return domain

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"encoding/hex"
@@ -68,9 +68,9 @@ func TestResolveResolverEth(t *testing.T) {
 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 }
 
-func TestResolveNickJohnson(t *testing.T) {
+func TestResolveNickJo1nson(t *testing.T) {
 	expected := "70abd981e01ad3e6eb1726a5001000877ab04417"
-	actual, err := Resolve(client, "nickjohnson.eth")
+	actual, err := Resolve(client, "nickjo1nson.eth")
 	require.Nil(t, err, "Error resolving name")
 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 }
@@ -95,7 +95,7 @@ func TestResolveHexString(t *testing.T) {
 }
 
 // func TestReverseResolveTestEnsTest(t *testing.T) {
-// 	expected := "harmony-domains.eth"
+// 	expected := "1ns.eth"
 // 	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
 // 	actual, err := ReverseResolve(client, address)
 // 	require.Nil(t, err, "Error resolving address")

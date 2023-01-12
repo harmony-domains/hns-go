@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"bytes"
@@ -27,7 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/publicresolver"
+	"github.com/jw-1ns/go-1ns/contracts/publicresolver"
 )
 
 var zeroHash = make([]byte, 32)

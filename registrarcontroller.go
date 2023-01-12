@@ -57,7 +57,7 @@ Following is a list of errors, events and public functions for registrarcontroll
 
 */
 
-package hns
+package onens
 
 import (
 	"fmt"
@@ -67,7 +67,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/registrarcontroller"
+	"github.com/jw-1ns/go-1ns/contracts/registrarcontroller"
 )
 
 // RegistrarController is the structure for the registrar controller contract
