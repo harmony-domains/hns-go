@@ -17,37 +17,32 @@ package hns
 import (
 	"time"
 
-	"github.com/ava-labs/coreth/ethclient"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/spf13/viper"
 )
 
 // Name represents an ENS name, for example 'foo.bar.eth'.
 type config struct {
-	dsRegistrant           common.Address
-	dsController           common.Address
-	dsResolver             common.Address
-	dsExpiry               time.Time
-	dsRegistrationInterval time.Duration
-	client                 ethclient.Client
+	Registrant           common.Address
+	Controller           common.Address
+	Resolver             common.Address
+	Expiry               time.Time
+	RegistrationInterval time.Duration
+	clientURL            string
+	client               *ethclient.Client
 }
 
 func getConfig() *config {
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig()
 	config := &config{}
-	config.dsRegistrant = common.HexToAddress(viper.GetString("DSREGISTRANT"))
-	config.dsController = common.HexToAddress(viper.GetString("DSREGISTRANT"))
-	config.dsResolver = common.HexToAddress(viper.GetString("DSRESOLVER"))
-	config.dsExpiry = time.Unix(viper.GetInt64("DSREGISTRATION_INTERVAL"), 0)
-	config.dsRegistrationInterval = viper.GetDuration("DSREGISTRATION_INTERVAL") * time.Second
-	config.client, _ = ethclient.Dial(viper.GetString("CLIENT_URL"))
-
-	// 	dsController := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
-	// 	dsResolver := common.HexToAddress("DaaF96c344f63131acadD0Ea35170E7892d3dfBA")
-	// 	dsExpiry := time.Unix(4741286688, 0)
-	// 	dsRegistrationInterval := 60 * time.Second
-
-	// 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
+	config.Registrant = common.HexToAddress(viper.GetString("DSREGISTRANT"))
+	config.Controller = common.HexToAddress(viper.GetString("DSREGISTRANT"))
+	config.Resolver = common.HexToAddress(viper.GetString("DSRESOLVER"))
+	config.Expiry = time.Unix(viper.GetInt64("DSREGISTRATION_INTERVAL"), 0)
+	config.RegistrationInterval = viper.GetDuration("DSREGISTRATION_INTERVAL") * time.Second
+	config.clientURL = viper.GetString("CLIENT_URL")
+	config.client, _ = ethclient.Dial(config.clientURL)
 	return config
 }

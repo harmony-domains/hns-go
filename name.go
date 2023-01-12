@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // Name represents an ENS name, for example 'foo.bar.eth'.
@@ -197,9 +198,9 @@ func (n *Name) RegistrationInterval() (time.Duration, error) {
 // Controller obtains the controller for this name.
 // The controller can carry out operations on the name such as setting
 // records, but cannot transfer ultimate ownership of the name.
-// func (n *Name) Controller() (common.Address, error) {
-// 	return n.registry.Owner(n.Name)
-// }
+func (n *Name) Controller() (common.Address, error) {
+	return n.registry.Owner(n.Name)
+}
 
 // SetController sets the controller for this name.
 // The controller can carry out operations on the name such as setting

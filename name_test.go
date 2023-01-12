@@ -16,35 +16,25 @@
 package hns
 
 import (
-	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestName(t *testing.T) {
-	// viper.SetConfigFile(".env")
-	// viper.ReadInConfig()
-	// fmt.Println(viper.Get("PORT"))
 	config := getConfig()
-	fmt.Println(config.dsRegistrant)
-	fmt.Println(config)
+	client = config.client
+	name, err := NewName(client, "resolver.eth")
+	require.Nil(t, err, "Failed to create name")
 
-	// 	dsRegistrant := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
-	// 	dsController := common.HexToAddress("a303ddc620aa7d1390baccc8a495508b183fab59")
-	// 	dsResolver := common.HexToAddress("DaaF96c344f63131acadD0Ea35170E7892d3dfBA")
-	// 	dsExpiry := time.Unix(4741286688, 0)
-	// 	dsRegistrationInterval := 60 * time.Second
+	// registrant, err := name.Registrant()
+	// require.Nil(t, err, "Failed to obtain registrant")
+	// assert.Equal(t, config.dsRegistrant, registrant, "Failed to obtain correct registrant")
 
-	// 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-	// 	name, err := NewName(client, "resolver.eth")
-	// 	require.Nil(t, err, "Failed to create name")
-
-	// 	registrant, err := name.Registrant()
-	// 	require.Nil(t, err, "Failed to obtain registrant")
-	// 	assert.Equal(t, dsRegistrant, registrant, "Failed to obtain correct registrant")
-
-	// 	controller, err := name.Controller()
-	// 	require.Nil(t, err, "Failed to obtain controller")
-	// 	assert.Equal(t, dsController, controller, "Failed to obtain correct controller")
+	controller, err := name.Controller()
+	require.Nil(t, err, "Failed to obtain controller")
+	assert.Equal(t, config.Controller, controller, "Failed to obtain correct controller")
 
 	// 	expiry, err := name.Expires()
 	// 	require.Nil(t, err, "Failed to obtain expiry")

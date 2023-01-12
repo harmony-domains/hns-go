@@ -18,7 +18,6 @@ require (
 require (
 	github.com/VictoriaMetrics/fastcache v1.10.0 // indirect
 	github.com/ava-labs/avalanchego v1.9.5-rc.7 // indirect
-	github.com/ava-labs/coreth v0.11.5 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
