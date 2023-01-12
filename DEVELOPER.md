@@ -71,14 +71,27 @@ Then we can run your tests again
 go test -run name_test.go
 ```
 
-
-
-
 This generates `contract.go` 
 
 Additional references
 * [Go Contract Bindings](https://geth.ethereum.org/docs/developers/dapp-developer/native-bindings) ; Geth ethereum org
 * [Smart Contract Compilation $ ABI](https://goethereumbook.org/smart-contract-compile/): Go Ethereum Book 
+
+## View go docs
+
+To run the godoc server
+
+`godoc -http=:6061 -index`
+
+and view the docs at
+
+[http://localhost:6061/pkg/](http://localhost:6061/pkg/)
+
+view go-1ns docs at 
+
+[http://localhost:6061/pkg/github.com/jw-1ns/go-1ns/](http://localhost:6061/pkg/github.com/jw-1ns/go-1ns/)
+
+
 
 
 
