@@ -25,16 +25,16 @@ import (
 func TestName(t *testing.T) {
 	config := getConfig()
 	client = config.client
-	name, err := NewName(client, "resolver.eth")
+	name, err := NewName(client, "resolver.country")
 	require.Nil(t, err, "Failed to create name")
 
-	// registrant, err := name.Registrant()
-	// require.Nil(t, err, "Failed to obtain registrant")
-	// assert.Equal(t, config.dsRegistrant, registrant, "Failed to obtain correct registrant")
+	registrant, err := name.Registrant()
+	require.Nil(t, err, "Failed to obtain registrant")
+	assert.Equal(t, config.BaseRegistrar, registrant, "Failed to obtain correct registrant")
 
-	controller, err := name.Controller()
-	require.Nil(t, err, "Failed to obtain controller")
-	assert.Equal(t, config.Controller, controller, "Failed to obtain correct controller")
+	// controller, err := name.Controller()
+	// require.Nil(t, err, "Failed to obtain controller")
+	// assert.Equal(t, config.Controller, controller, "Failed to obtain correct controller")
 
 	// 	expiry, err := name.Expires()
 	// 	require.Nil(t, err, "Failed to obtain expiry")
@@ -65,7 +65,7 @@ func TestName(t *testing.T) {
 // 		t.Skip()
 // 	}
 // 	// client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-// 	// name, err := NewName(client, "resolver.eth")
+// 	// name, err := NewName(client, "resolver.country")
 // 	// require.Nil(t, err, "Failed to create name")
 
 // 	// // Register stage 1 - should fail as already registered
@@ -77,7 +77,7 @@ func TestName(t *testing.T) {
 
 // func TestInvalidName(t *testing.T) {
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-// 	_, err := NewName(client, "ab.eth")
+// 	_, err := NewName(client, "ab.country")
 // 	require.Equal(t, err.Error(), "name is not valid according to the rules of the registrar (too short, invalid characters, etc.)")
 // }
 
@@ -205,7 +205,7 @@ func TestName(t *testing.T) {
 // 	// 	t.Skip()
 // 	// }
 // 	// client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-// 	// name, err := NewName(client, "foobar5.eth")
+// 	// name, err := NewName(client, "foobar5.country")
 // 	// require.Nil(t, err, "Failed to create name")
 
 // 	// oldExpires, err := name.Expires()
@@ -229,7 +229,7 @@ func TestName(t *testing.T) {
 // 	// 	t.Skip()
 // 	// }
 // 	// client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-// 	// name, err := NewName(client, "foobar5.eth")
+// 	// name, err := NewName(client, "foobar5.country")
 // 	// require.Nil(t, err, "Failed to create name")
 
 // 	// opts, err := generateTxOpts(client, registrant, "1 wei")
@@ -261,11 +261,11 @@ func TestName(t *testing.T) {
 // 	}
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	sub := unregisteredDomain(client)
-// 	sub = strings.TrimSuffix(sub, ".eth")
+// 	sub = strings.TrimSuffix(sub, ".country")
 
 // 	opts, err := generateTxOpts(client, dsRegistrant, "0")
 // 	require.Nil(t, err, "Failed to generate transaction options")
@@ -276,7 +276,7 @@ func TestName(t *testing.T) {
 // 	waitForTransaction(client, tx.Hash())
 
 // 	// Confirm registrantship of the subdomain
-// 	subdomain := fmt.Sprintf("%s.foobar5.eth", sub)
+// 	subdomain := fmt.Sprintf("%s.foobar5.country", sub)
 
 // 	registry, err := NewRegistry(client)
 // 	require.Nil(t, err, "Failed to create registry")
@@ -292,7 +292,7 @@ func TestName(t *testing.T) {
 // 	}
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	sub := "go-1ns-test-1331354196"
@@ -313,7 +313,7 @@ func TestName(t *testing.T) {
 // 	dsController := common.HexToAddress("E195c59BCF26fD36c82d1C720860127A5c1c4040")
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	// Ensure that the registrant starts out as the controller
@@ -357,7 +357,7 @@ func TestName(t *testing.T) {
 // 	}
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	// Ensure that the registrant starts out as the controller
@@ -381,7 +381,7 @@ func TestName(t *testing.T) {
 // 	dsController := common.HexToAddress("E195c59BCF26fD36c82d1C720860127A5c1c4040")
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	// Ensure that the registrant starts out as the controller
@@ -422,7 +422,7 @@ func TestName(t *testing.T) {
 // 	}
 // 	client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	name, err := NewName(client, "foobar5.eth")
+// 	name, err := NewName(client, "foobar5.country")
 // 	require.Nil(t, err, "Failed to create name")
 
 // 	// Ensure that the registrant starts out as the controller
@@ -449,7 +449,7 @@ func TestName(t *testing.T) {
 // 	// }
 // 	// client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	// name, err := NewName(client, "foobar5.eth")
+// 	// name, err := NewName(client, "foobar5.country")
 // 	// require.Nil(t, err, "Failed to create name")
 
 // 	// // Ensure the existing registrant is correct
@@ -490,7 +490,7 @@ func TestName(t *testing.T) {
 // 	// }
 // 	// client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
-// 	// name, err := NewName(client, "foobar5.eth")
+// 	// name, err := NewName(client, "foobar5.country")
 // 	// require.Nil(t, err, "Failed to create name")
 
 // 	// // Ensure that the registrant starts out as the controller
@@ -563,7 +563,7 @@ func TestName(t *testing.T) {
 // 	registry, _ := NewRegistry(client)
 // 	for {
 // 		// #nosec G404
-// 		domain := fmt.Sprintf("go-1ns-test-%d.eth", rand.Int31())
+// 		domain := fmt.Sprintf("go-1ns-test-%d.country", rand.Int31())
 // 		controller, _ := registry.Owner(domain)
 // 		if controller == UnknownAddress {
 // 			return domain

@@ -29,9 +29,6 @@ go build
 
 go test
 
-# Run specific tests
-go test -run name_test.go
-
 ```
 
 ## Development Tasks
@@ -92,7 +89,9 @@ view go-1ns docs at
 [http://localhost:6061/pkg/github.com/jw-1ns/go-1ns/](http://localhost:6061/pkg/github.com/jw-1ns/go-1ns/)
 
 
+## Publishing a module
 
+See [here](https://go.dev/doc/modules/publishing).
 
 
 

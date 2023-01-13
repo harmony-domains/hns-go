@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/ethereum/go-ethereum v1.10.26
+	github.com/harmony-domains/hns-go v0.0.2
 	github.com/ipfs/go-cid v0.3.2
 	github.com/multiformats/go-multibase v0.1.1
 	github.com/multiformats/go-multihash v0.2.1
