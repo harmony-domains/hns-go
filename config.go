@@ -39,7 +39,10 @@ tx 0x20a148fac52a922e4956ec21330dcc1e39307d0734dd23cc301e68438cdbdba9
 package onens
 
 import (
+	"fmt"
+	"log"
 	"math"
+	"os"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -105,7 +108,15 @@ func getConfig() *config {
 	config.UniversalResolver = common.HexToAddress(viper.GetString("UNIVERSAL_RESOLVER"))
 	config.RegistrationInterval = viper.GetDuration("DSREGISTRATION_INTERVAL") * time.Second
 	config.clientURL = viper.GetString("CLIENT_URL")
-	config.client, _ = ethclient.Dial(config.clientURL)
+	client, err := ethclient.Dial(config.clientURL)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Unable to connect to Ethereum Client")
+		fmt.Println(config.clientURL)
+		os.Exit(1)
+		log.Fatal(err)
+	}
+	config.client = client
 	config.TLD = viper.GetString("TLD")
 	return config
 }
