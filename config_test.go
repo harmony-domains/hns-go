@@ -16,7 +16,6 @@
 package onens
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -36,37 +35,32 @@ func TestConfig(t *testing.T) {
 	baseRegistrar, err := baseregistrar.NewContract(config.BaseRegistrar, config.client)
 	assert.Equal(t, err, nil, "Error getting BaseRegistrar")
 	baseRegistrarENS, err := baseRegistrar.Ens(nil)
-	// baseRegistrarAddress, err := baseRegistrar.Address()
-	fmt.Printf("baseRegistrar.Ens: %v\n", baseRegistrarENS)
-	// fmt.Printf("baseRegistrar: %v\n", &baseRegistrar)
 	assert.Equal(t, err, nil, "Error getting ENS from baseRegistrar")
 	assert.Equal(t, baseRegistrarENS, config.ENSRegistry, "Incorrect ENS for baseRegistrar")
 
 	//Check that the ENSRegistry has test owners for domains set correctly
-	// await registerDomain('test', alice, await ensDeployer.publicResolver(), await ensDeployer.registrarController())
-	// await registerDomain('resolver', bob, await ensDeployer.publicResolver(), await ensDeployer.registrarController())
 	deployerAddress := common.HexToAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
-	aliceAddress := common.HexToAddress("0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65")
-	// bobAddress := common.HexToAddress("0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc")
-	countryNameHash, err := NameHash("country")
-	assert.Equal(t, err, nil, "Error getting Namehash for country")
-	testNameHash, err := NameHash("test")
-	assert.Equal(t, err, nil, "Error getting Namehash for test")
-	resolverNameHash, err := NameHash("resolver")
-	assert.Equal(t, err, nil, "Error getting Namehash for resolver")
 	ensRegistry, err := ensregistry.NewContract(config.ENSRegistry, config.client)
 	assert.Equal(t, err, nil, "Error getting ENSRegistry")
 	// country is owned by the BaseRegistrar
+	countryNameHash, err := NameHash("country")
+	assert.Equal(t, err, nil, "Error getting Namehash for country")
 	countryOwner, err := ensRegistry.Owner(nil, countryNameHash)
 	assert.Equal(t, err, nil, "Error getting resolver node owner form ENSRegistry")
 	assert.Equal(t, countryOwner, config.BaseRegistrar, "Incorrect Owner for country node")
-	// test is owned by Alice
-	testOwner, err := ensRegistry.Owner(nil, testNameHash)
-	assert.Equal(t, err, nil, "Error getting resolver node owner form ENSRegistry")
-	assert.Equal(t, testOwner, aliceAddress, "Incorrect Owner for test node")
 	// resolver is owned by Deployer
+	resolverNameHash, err := NameHash("resolver")
+	assert.Equal(t, err, nil, "Error getting Namehash for resolver")
 	resolverOwner, err := ensRegistry.Owner(nil, resolverNameHash)
 	assert.Equal(t, err, nil, "Error getting resolver node owner form ENSRegistry")
 	assert.Equal(t, resolverOwner, deployerAddress, "Incorrect Owner for resolver node")
+	// test.country is owned by NameWrapper
+	// testCountryNameHashHex := "6ccdbd41a174e9b5e34bffee7b0cc45c3ef17f8763cd491f14bc52dbb550b3b2"
+	testCountryNameHash := []byte{108, 205, 189, 65, 161, 116, 233, 181, 227, 75, 255, 238, 123, 12, 196, 92, 62, 241, 127, 135, 99, 205, 73, 31, 20, 188, 82, 219, 181, 80, 179, 178}
+	var testCountryNameHash32 [32]byte
+	copy(testCountryNameHash32[:], testCountryNameHash)
+	testCountryOwner, err := ensRegistry.Owner(nil, testCountryNameHash32)
+	assert.Equal(t, err, nil, "Error getting test.country node owner form ENSRegistry")
+	assert.Equal(t, testCountryOwner, config.NameWrapper, "Incorrect Owner for test.country node")
 
 }
