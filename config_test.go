@@ -26,8 +26,7 @@ import (
 
 func TestConfig(t *testing.T) {
 	zeroAddress := common.HexToAddress("0x0000000000000000000000000000000000000000")
-	config := getConfig()
-	client = config.client
+	// config := getConfig()
 	// Test we can connect to the client
 	// Test we can get configured contract addresses and they match
 	//Functional Tests

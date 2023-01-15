@@ -59,7 +59,7 @@ type commitmentData struct {
 	fuses         uint32
 	wrapperExpiry uint64
 }
-type config struct {
+type configStruct struct {
 	PriceOracle          common.Address
 	USDOracle            common.Address
 	ENSRegistry          common.Address
@@ -82,8 +82,11 @@ type config struct {
 	commitmentData
 }
 
-func getConfig() *config {
-	config := &config{}
+var config *configStruct = getConfig()
+var client *ethclient.Client = config.client
+
+func getConfig() *configStruct {
+	config := &configStruct{}
 	// Set Commitment Data
 	config.commitmentData.secret = [32]byte{}
 	config.commitmentData.publicResover = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))

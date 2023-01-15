@@ -19,12 +19,11 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var client, _ = ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
+// var client, _ = ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
 
 func TestResolveEmpty(t *testing.T) {
 	_, err := Resolve(client, "")
