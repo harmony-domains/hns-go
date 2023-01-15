@@ -89,3 +89,12 @@ func nameHashPart(currentHash [32]byte, name string) (hash [32]byte, err error) 
 	sha.Sum(hash[:0])
 	return
 }
+
+func nameHashCountry(name string) (countryNameHash [32]byte, err error) {
+	countryHash, err := NameHash("country")
+	if err != nil {
+		return
+	}
+	countryNameHash, err = nameHashPart(countryHash, name)
+	return
+}
