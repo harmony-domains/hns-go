@@ -16,7 +16,6 @@
 package onens
 
 import (
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -62,8 +61,6 @@ func (r *Registry) Owner(name string) (common.Address, error) {
 // ResolverAddress returns the address of the resolver for a name
 func (r *Registry) ResolverAddress(name string) (common.Address, error) {
 	nameHash, err := NameHash(name)
-	fmt.Printf("ResolverAddress Name: %+v\n", name)
-	fmt.Printf("ResolverAddress Name Hash: %+v\n", nameHash)
 	if err != nil {
 		return UnknownAddress, err
 	}
@@ -85,7 +82,6 @@ func (r *Registry) Resolver(name string) (*Resolver, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("RegistryResolverAddress%+v\n", address)
 	return NewResolverAt(r.backend, name, address)
 }
 

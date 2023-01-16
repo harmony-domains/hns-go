@@ -93,7 +93,6 @@ func (r *BaseRegistrar) Owner(domain string) (common.Address, error) {
 		return UnknownAddress, err
 	}
 	labelHash, err := LabelHash(name)
-	fmt.Printf("Getting owner of lablehash: %+v\n", labelHash)
 	if err != nil {
 		return UnknownAddress, err
 	}
