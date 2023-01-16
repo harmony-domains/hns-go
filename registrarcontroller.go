@@ -92,7 +92,9 @@ func NewRegistrarController(backend bind.ContractBackend, domain string) (*Regis
 
 	// Obtain the controller from the resolver
 	// permanentRegistrar: '0x018fac06'
-	controllerAddress, err := resolver.InterfaceImplementer([4]byte{0x01, 0x8f, 0xac, 0x06})
+	// controllerAddress, err := resolver.InterfaceImplementer([4]byte{0x01, 0x8f, 0xac, 0x06})
+	// RegistrarController 0xdf7ed181
+	controllerAddress, err := resolver.InterfaceImplementer([4]byte{0xdf, 0x7e, 0xd1, 0x81})
 	if err != nil {
 		return nil, err
 	}

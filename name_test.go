@@ -23,31 +23,29 @@ import (
 )
 
 func TestName(t *testing.T) {
-	config := getConfig()
-	client = config.client
-	name, err := NewName(client, "resolver.country")
+	name, err := NewName(client, "test.country")
 	require.Nil(t, err, "Failed to create name")
 
 	registrant, err := name.Registrant()
 	require.Nil(t, err, "Failed to obtain registrant")
-	assert.Equal(t, config.BaseRegistrar, registrant, "Failed to obtain correct registrant")
+	assert.Equal(t, config.NameWrapper, registrant, "Failed to obtain correct registrant")
 
-	// controller, err := name.Controller()
-	// require.Nil(t, err, "Failed to obtain controller")
-	// assert.Equal(t, config.Controller, controller, "Failed to obtain correct controller")
+	controller, err := name.Controller()
+	require.Nil(t, err, "Failed to obtain controller")
+	assert.Equal(t, config.NameWrapper, controller, "Failed to obtain correct controller")
 
-	// 	expiry, err := name.Expires()
-	// 	require.Nil(t, err, "Failed to obtain expiry")
+	expiry, err := name.Expires()
+	require.Nil(t, err, "Failed to obtain expiry")
 
-	// 	assert.Equal(t, dsExpiry, expiry, "Failed to obtain correct expiry")
+	assert.Equal(t, config.Expiry, expiry, "Failed to obtain correct expiry")
 
-	// 	registrationInterval, err := name.RegistrationInterval()
-	// 	require.Nil(t, err, "Failed to obtain registration interval")
-	// 	assert.Equal(t, dsRegistrationInterval, registrationInterval, "Failed to obtain correct registration interval")
+	registrationInterval, err := name.RegistrationInterval()
+	require.Nil(t, err, "Failed to obtain registration interval")
+	assert.Equal(t, config.RegistrationInterval, registrationInterval, "Failed to obtain correct registration interval")
 
-	// resolverAddress, err := name.ResolverAddress()
-	// require.Nil(t, err, "Failed to obtain resolver address")
-	// assert.Equal(t, dsResolver, resolverAddress, "Failed to obtain correct resolver address")
+	resolverAddress, err := name.ResolverAddress()
+	require.Nil(t, err, "Failed to obtain resolver address")
+	assert.Equal(t, config.PublicResolver, resolverAddress, "Failed to obtain correct resolver address")
 }
 
 // func TestNameExpiry(t *testing.T) {

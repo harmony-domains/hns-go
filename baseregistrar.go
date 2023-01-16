@@ -44,6 +44,7 @@ func NewBaseRegistrar(backend bind.ContractBackend, domain string) (*BaseRegistr
 		return nil, fmt.Errorf("no registrar for domain %s", domain)
 	}
 
+	// contract, err := baseregistrar.NewContract(config.BaseRegistrar, backend)
 	contract, err := baseregistrar.NewContract(address, backend)
 	if err != nil {
 		return nil, err
@@ -92,6 +93,7 @@ func (r *BaseRegistrar) Owner(domain string) (common.Address, error) {
 		return UnknownAddress, err
 	}
 	labelHash, err := LabelHash(name)
+	fmt.Printf("Getting owner of lablehash: %+v\n", labelHash)
 	if err != nil {
 		return UnknownAddress, err
 	}

@@ -16,6 +16,7 @@
 package onens
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
@@ -38,23 +39,14 @@ type Registry struct {
 
 // NewRegistry obtains the ENS registry
 func NewRegistry(backend bind.ContractBackend) (*Registry, error) {
-	address, err := RegistryContractAddress(backend)
-	if err != nil {
-		return nil, err
-	}
-	return NewRegistryAt(backend, address)
-}
-
-// NewRegistryAt obtains the ENS registry at a given address
-func NewRegistryAt(backend bind.ContractBackend, address common.Address) (*Registry, error) {
-	contract, err := ensregistry.NewContract(address, backend)
+	contract, err := ensregistry.NewContract(config.ENSRegistry, backend)
 	if err != nil {
 		return nil, err
 	}
 	return &Registry{
 		backend:      backend,
 		Contract:     contract,
-		ContractAddr: address,
+		ContractAddr: config.ENSRegistry,
 	}, nil
 }
 
@@ -70,6 +62,8 @@ func (r *Registry) Owner(name string) (common.Address, error) {
 // ResolverAddress returns the address of the resolver for a name
 func (r *Registry) ResolverAddress(name string) (common.Address, error) {
 	nameHash, err := NameHash(name)
+	fmt.Printf("ResolverAddress Name: %+v\n", name)
+	fmt.Printf("ResolverAddress Name Hash: %+v\n", nameHash)
 	if err != nil {
 		return UnknownAddress, err
 	}
@@ -91,6 +85,7 @@ func (r *Registry) Resolver(name string) (*Resolver, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("RegistryResolverAddress%+v\n", address)
 	return NewResolverAt(r.backend, name, address)
 }
 
@@ -119,7 +114,7 @@ func (r *Registry) SetSubdomainOwner(opts *bind.TransactOpts, name string, subna
 // RegistryContractAddress obtains the address of the registry contract for a chain.
 // Get the Registry contract address from config
 func RegistryContractAddress(backend bind.ContractBackend) (common.Address, error) {
-	config := getConfig()
+	// config := getConfig()
 	return config.ENSRegistry, nil
 }
 

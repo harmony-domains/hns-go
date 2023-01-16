@@ -60,20 +60,20 @@ type commitmentData struct {
 	wrapperExpiry uint64
 }
 type configStruct struct {
-	PriceOracle          common.Address
-	USDOracle            common.Address
-	ENSRegistry          common.Address
-	FIFSRegistrar        common.Address
-	ReverseRegistrar     common.Address
-	BaseRegistrar        common.Address
-	MetadataService      common.Address
-	NameWrapper          common.Address
-	RegistrarController  common.Address
-	PublicResover        common.Address
-	UniversalResolver    common.Address
-	Registrant           common.Address
-	Controller           common.Address
-	Resolver             common.Address
+	PriceOracle         common.Address
+	USDOracle           common.Address
+	ENSRegistry         common.Address
+	FIFSRegistrar       common.Address
+	ReverseRegistrar    common.Address
+	BaseRegistrar       common.Address
+	MetadataService     common.Address
+	NameWrapper         common.Address
+	RegistrarController common.Address
+	PublicResolver      common.Address
+	UniversalResolver   common.Address
+	Registrant          common.Address
+	// Controller           common.Address
+	// Resolver             common.Address
 	Expiry               time.Time
 	RegistrationInterval time.Duration
 	clientURL            string
@@ -107,9 +107,10 @@ func getConfig() *configStruct {
 	config.MetadataService = common.HexToAddress(viper.GetString("METADATA_SERVICE"))
 	config.NameWrapper = common.HexToAddress(viper.GetString("NAME_WRAPPER"))
 	config.RegistrarController = common.HexToAddress(viper.GetString("REGISTRAR_CONTROLLER"))
-	config.PublicResover = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))
+	config.PublicResolver = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))
 	config.UniversalResolver = common.HexToAddress(viper.GetString("UNIVERSAL_RESOLVER"))
-	config.RegistrationInterval = viper.GetDuration("DSREGISTRATION_INTERVAL") * time.Second
+	config.Expiry = time.Unix(viper.GetInt64("EXPIRY"), 0)
+	config.RegistrationInterval = viper.GetDuration("REGISTRATION_INTERVAL") * time.Second
 	config.clientURL = viper.GetString("CLIENT_URL")
 	client, err := ethclient.Dial(config.clientURL)
 	if err != nil {

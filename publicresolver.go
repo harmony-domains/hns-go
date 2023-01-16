@@ -74,14 +74,14 @@ func NewResolverAt(backend bind.ContractBackend, domain string, address common.A
 	}
 
 	// Ensure this really is a resolver contract
-	nameHash, err := NameHash("test.eth")
+	nameHash, err := NameHash("test.country")
 	if err != nil {
 		return nil, err
 	}
 	_, err = contract.Addr(nil, nameHash)
 	if err != nil {
 		if err.Error() == "no contract code at given address" {
-			return nil, errors.New("no resolver")
+			return nil, errors.New("no resolver H")
 		}
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func NewResolverAt(backend bind.ContractBackend, domain string, address common.A
 
 // PublicResolverAddress obtains the address of the public resolver for a chain
 func PublicResolverAddress(backend bind.ContractBackend) (common.Address, error) {
-	return Resolve(backend, "resolver.eth")
+	return Resolve(backend, "resolver.country")
 }
 
 // Address returns the Ethereum address of the domain
