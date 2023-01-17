@@ -39,9 +39,12 @@ tx 0x20a148fac52a922e4956ec21330dcc1e39307d0734dd23cc301e68438cdbdba9
 package onens
 
 import (
+	"crypto/ecdsa"
+	"crypto/x509"
 	"fmt"
 	"log"
 	"math"
+	"math/big"
 	"os"
 	"time"
 
@@ -50,7 +53,53 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Name represents an ENS name, for example 'foo.bar.country'.
+type testAccounts struct {
+	deployerAddress     common.Address
+	deployerPrivateKey  *ecdsa.PrivateKey
+	operatorAAddress    common.Address
+	operatorAPrivateKey *ecdsa.PrivateKey
+	operatorBAddress    common.Address
+	operatorBPrivateKey *ecdsa.PrivateKey
+	operatorCAddress    common.Address
+	operatorCPrivateKey *ecdsa.PrivateKey
+	aliceAddress        common.Address
+	alicePrivateKey     *ecdsa.PrivateKey
+	bobAddress          common.Address
+	bobPrivateKey       *ecdsa.PrivateKey
+	carolAddress        common.Address
+	carolPrivateKey     *ecdsa.PrivateKey
+	doraAddress         common.Address
+	doraPrivateKey      *ecdsa.PrivateKey
+	ernieAddress        common.Address
+	erniePrivateKey     *ecdsa.PrivateKey
+	fredAddress         common.Address
+	fredPrivateKey      *ecdsa.PrivateKey
+}
+
+// Test configuration Structure
+type tconfigStruct struct {
+	testAccounts
+	PriceOracle          common.Address
+	USDOracle            common.Address
+	ENSRegistry          common.Address
+	FIFSRegistrar        common.Address
+	ReverseRegistrar     common.Address
+	BaseRegistrar        common.Address
+	MetadataService      common.Address
+	NameWrapper          common.Address
+	RegistrarController  common.Address
+	PublicResolver       common.Address
+	UniversalResolver    common.Address
+	Registrant           common.Address
+	Expiry               time.Time
+	RegistrationInterval time.Duration
+	clientURL            string
+	client               *ethclient.Client
+	TLD                  string
+	duration             *big.Int
+}
+
+// onens Default commitment data used for registration comittment data
 type commitmentData struct {
 	secret        [32]byte
 	publicResover common.Address
@@ -59,34 +108,82 @@ type commitmentData struct {
 	fuses         uint32
 	wrapperExpiry uint64
 }
+
+// Configuration Structure
 type configStruct struct {
-	PriceOracle         common.Address
-	USDOracle           common.Address
-	ENSRegistry         common.Address
-	FIFSRegistrar       common.Address
-	ReverseRegistrar    common.Address
-	BaseRegistrar       common.Address
-	MetadataService     common.Address
-	NameWrapper         common.Address
-	RegistrarController common.Address
-	PublicResolver      common.Address
-	UniversalResolver   common.Address
-	Registrant          common.Address
-	// Controller           common.Address
-	// Resolver             common.Address
-	Expiry               time.Time
-	RegistrationInterval time.Duration
-	clientURL            string
-	client               *ethclient.Client
-	TLD                  string
+	ENSRegistry common.Address
 	commitmentData
 }
 
-var config *configStruct = getConfig()
-var client *ethclient.Client = config.client
+var tconfig *tconfigStruct = getTConfig()
+var tclient *ethclient.Client = tconfig.client
 
+var config *configStruct = getConfig()
+
+// Get Test Configuration
+func getTConfig() *tconfigStruct {
+	tconfig := &tconfigStruct{}
+	// Read test config from environment file
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
+	// set test accounts
+	tconfig.testAccounts.deployerAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_DEPLOYER"))
+	tconfig.testAccounts.deployerPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_DEPLOYER"))
+	tconfig.testAccounts.operatorAAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPEATORA"))
+	tconfig.testAccounts.operatorAPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORA"))
+	tconfig.testAccounts.operatorBAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPERATORB"))
+	tconfig.testAccounts.operatorBPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORB"))
+	tconfig.testAccounts.operatorCAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPERATORC"))
+	tconfig.testAccounts.operatorCPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORC"))
+	tconfig.testAccounts.aliceAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_ALICE"))
+	tconfig.testAccounts.alicePrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_ALICE"))
+	tconfig.testAccounts.bobAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_BOB"))
+	tconfig.testAccounts.bobPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_BOB"))
+	tconfig.testAccounts.carolAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_CAROL"))
+	tconfig.testAccounts.carolPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_CAROL"))
+	tconfig.testAccounts.doraAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_DORA"))
+	tconfig.testAccounts.doraPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_DORA"))
+	tconfig.testAccounts.ernieAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_ERNIE"))
+	tconfig.testAccounts.erniePrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_FRANK"))
+	tconfig.testAccounts.fredAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_FRED"))
+	tconfig.testAccounts.fredPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_ERNIE"))
+	// set additional test configuration
+	tconfig.PriceOracle = common.HexToAddress(viper.GetString("TEST_PRICE_ORACLE"))
+	tconfig.USDOracle = common.HexToAddress(viper.GetString("TEST_USD_ORACLE"))
+	tconfig.ENSRegistry = common.HexToAddress(viper.GetString("TEST_ENS_REGISTRY"))
+	tconfig.FIFSRegistrar = common.HexToAddress(viper.GetString("TEST_FIFS_REGISTRAR"))
+	tconfig.ReverseRegistrar = common.HexToAddress(viper.GetString("TEST_REVERSE_REGISTRAR"))
+	tconfig.BaseRegistrar = common.HexToAddress(viper.GetString("TEST_BASE_REGISTRAR"))
+	tconfig.MetadataService = common.HexToAddress(viper.GetString("TEST_METADATA_SERVICE"))
+	tconfig.NameWrapper = common.HexToAddress(viper.GetString("TEST_NAME_WRAPPER"))
+	tconfig.RegistrarController = common.HexToAddress(viper.GetString("TEST_REGISTRAR_CONTROLLER"))
+	tconfig.PublicResolver = common.HexToAddress(viper.GetString("TEST_PUBLIC_RESOLVER"))
+	tconfig.UniversalResolver = common.HexToAddress(viper.GetString("TEST_UNIVERSAL_RESOLVER"))
+	tconfig.Expiry = time.Unix(viper.GetInt64("TEST_EXPIRY"), 0)
+	tconfig.RegistrationInterval = viper.GetDuration("TEST_REGISTRATION_INTERVAL") * time.Second
+	tconfig.clientURL = viper.GetString("TEST_CLIENT_URL")
+	client, err := ethclient.Dial(tconfig.clientURL)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Unable to connect to Ethereum Client")
+		fmt.Println(tconfig.clientURL)
+		os.Exit(1)
+		log.Fatal(err)
+	}
+	tconfig.client = client
+	tconfig.TLD = viper.GetString("TLD")
+	tconfig.duration = big.NewInt(viper.GetInt64("TEST_DURATION"))
+	return tconfig
+}
+
+// Get onens configuration
 func getConfig() *configStruct {
 	config := &configStruct{}
+	// Read test config from environment file
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
+	// set configuration
+	config.ENSRegistry = common.HexToAddress(viper.GetString("ENS_REGISTRY"))
 	// Set Commitment Data
 	config.commitmentData.secret = [32]byte{}
 	config.commitmentData.publicResover = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))
@@ -94,33 +191,15 @@ func getConfig() *configStruct {
 	config.commitmentData.reverseRecord = false
 	config.commitmentData.fuses = 0
 	config.commitmentData.wrapperExpiry = math.MaxUint64
-
-	// Read config from environment file
-	viper.SetConfigFile(".env")
-	viper.ReadInConfig()
-	config.PriceOracle = common.HexToAddress(viper.GetString("PRICE_ORACLE"))
-	config.USDOracle = common.HexToAddress(viper.GetString("USD_ORACLE"))
-	config.ENSRegistry = common.HexToAddress(viper.GetString("ENS_REGISTRY"))
-	config.FIFSRegistrar = common.HexToAddress(viper.GetString("FIFS_REGISTRAR"))
-	config.ReverseRegistrar = common.HexToAddress(viper.GetString("REVERSE_REGISTRAR"))
-	config.BaseRegistrar = common.HexToAddress(viper.GetString("BASE_REGISTRAR"))
-	config.MetadataService = common.HexToAddress(viper.GetString("METADATA_SERVICE"))
-	config.NameWrapper = common.HexToAddress(viper.GetString("NAME_WRAPPER"))
-	config.RegistrarController = common.HexToAddress(viper.GetString("REGISTRAR_CONTROLLER"))
-	config.PublicResolver = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))
-	config.UniversalResolver = common.HexToAddress(viper.GetString("UNIVERSAL_RESOLVER"))
-	config.Expiry = time.Unix(viper.GetInt64("EXPIRY"), 0)
-	config.RegistrationInterval = viper.GetDuration("REGISTRATION_INTERVAL") * time.Second
-	config.clientURL = viper.GetString("CLIENT_URL")
-	client, err := ethclient.Dial(config.clientURL)
-	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Unable to connect to Ethereum Client")
-		fmt.Println(config.clientURL)
-		os.Exit(1)
-		log.Fatal(err)
-	}
-	config.client = client
-	config.TLD = viper.GetString("TLD")
 	return config
+}
+
+func decode(pemEncoded string) *ecdsa.PrivateKey {
+	// block, _ := pem.Decode([]byte(pemEncoded))
+	// x509Encoded := block.Bytes
+	x509Encoded := []byte(pemEncoded)
+
+	privateKey, _ := x509.ParseECPrivateKey(x509Encoded)
+
+	return privateKey
 }

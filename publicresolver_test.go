@@ -15,80 +15,78 @@
 
 package onens
 
-// var client, _ = ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")
-
 // func TestResolveEmpty(t *testing.T) {
-// 	_, err := Resolve(client, "")
+// 	_, err := Resolve(tclient, "")
 // 	assert.NotNil(t, err, "Resolved empty name")
 // }
 
 // func TestResolveZero(t *testing.T) {
-// 	_, err := Resolve(client, "0")
+// 	_, err := Resolve(tclient, "0")
 // 	assert.NotNil(t, err, "Resolved empty name")
 // }
 
 // func TestResolveNotPresent(t *testing.T) {
-// 	_, err := Resolve(client, "sirnotappearinginthisregistry.eth")
+// 	_, err := Resolve(tclient, "sirnotappearinginthisregistry.eth")
 // 	require.NotNil(t, err, "Resolved name that does not exist")
 // 	assert.Equal(t, "unregistered name", err.Error(), "Unexpected error")
 // }
 
 // func TestResolveNoResolver(t *testing.T) {
-// 	_, err := Resolve(client, "noresolver.eth")
+// 	_, err := Resolve(tclient, "noresolver.eth")
 // 	require.NotNil(t, err, "Resolved name without a resolver")
 // 	assert.Equal(t, "no resolver", err.Error(), "Unexpected error")
 // }
 
 // func TestResolveBadResolver(t *testing.T) {
-// 	_, err := Resolve(client, "resolvestozero.eth")
+// 	_, err := Resolve(tclient, "resolvestozero.eth")
 // 	require.NotNil(t, err, "Resolved name with a bad resolver")
 // 	assert.Equal(t, "no address", err.Error(), "Unexpected error")
 // }
 
 // func TestResolveTestEnsTest(t *testing.T) {
 // 	expected := "388ea662ef2c223ec0b047d41bf3c0f362142ad5"
-// 	actual, err := Resolve(client, "test.enstest.eth")
+// 	actual, err := Resolve(tclient, "test.enstest.eth")
 // 	require.Nil(t, err, "Error resolving name")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
 // func TestResolveResolverEth(t *testing.T) {
 // 	expected := "42d63ae25990889e35f215bc95884039ba354115"
-// 	actual, err := Resolve(client, "resolver.eth")
+// 	actual, err := Resolve(tclient, "resolver.eth")
 // 	require.Nil(t, err, "Error resolving name")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
 // func TestResolveNickJo1nson(t *testing.T) {
 // 	expected := "70abd981e01ad3e6eb1726a5001000877ab04417"
-// 	actual, err := Resolve(client, "nickjo1nson.eth")
+// 	actual, err := Resolve(tclient, "nickjo1nson.eth")
 // 	require.Nil(t, err, "Error resolving name")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
 // func TestResolveAddress(t *testing.T) {
 // 	expected := "5ffc014343cd971b7eb70732021e26c35b744cc4"
-// 	actual, err := Resolve(client, "0x5ffc014343cd971b7eb70732021e26c35b744cc4")
+// 	actual, err := Resolve(tclient, "0x5ffc014343cd971b7eb70732021e26c35b744cc4")
 // 	require.Nil(t, err, "Error resolving address")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
 // func TestResolveShortAddress(t *testing.T) {
 // 	expected := "0000000000000000000000000000000000000001"
-// 	actual, err := Resolve(client, "0x1")
+// 	actual, err := Resolve(tclient, "0x1")
 // 	require.Nil(t, err, "Error resolving address")
 // 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 // }
 
 // func TestResolveHexString(t *testing.T) {
-// 	_, err := Resolve(client, "0xe32c6d1a964749b6de2130e20daed821a45b9e7261118801ff5319d0ffc6b54a")
+// 	_, err := Resolve(tclient, "0xe32c6d1a964749b6de2130e20daed821a45b9e7261118801ff5319d0ffc6b54a")
 // 	assert.NotNil(t, err, "Resolved too-long hex string")
 // }
 
 // func TestReverseResolveTestEnsTest(t *testing.T) {
 // 	expected := "1ns.eth"
 // 	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
-// 	actual, err := ReverseResolve(client, address)
+// 	actual, err := ReverseResolve(tclient, address)
 // 	require.Nil(t, err, "Error resolving address")
 // 	assert.Equal(t, expected, actual, "Did not receive expected result")
 // }

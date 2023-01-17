@@ -22,8 +22,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/auctionregistrar"
-	"github.com/harmony-domains/hns-go/contracts/registry"
+	"github.com/jw-1ns/go-1ns/contracts/baseregistrar"
 	"github.com/jw-1ns/go-1ns/contracts/ensregistry"
 	"github.com/jw-1ns/go-1ns/util"
 	"github.com/pkg/errors"
@@ -116,7 +115,7 @@ func RegistryContractAddress(backend bind.ContractBackend) (common.Address, erro
 
 // RegistryContractFromRegistrar obtains the registry contract given an
 // existing registrar contract
-func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *auctionregistrar.Contract) (*registry.Contract, error) {
+func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *baseregistrar.Contract) (*ensregistry.Contract, error) {
 	if registrar == nil {
 		return nil, errors.New("no registrar contract")
 	}
@@ -124,7 +123,7 @@ func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *auct
 	if err != nil {
 		return nil, err
 	}
-	return registry.NewContract(registryAddress, backend)
+	return ensregistry.NewContract(registryAddress, backend)
 }
 
 // SetResolver sets the resolver for a name
