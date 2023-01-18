@@ -248,6 +248,13 @@ func (n *Name) Reclaim(opts *bind.TransactOpts) (*types.Transaction, error) {
 
 // Registrant obtains the registrant for this name.
 func (n *Name) Registrant() (common.Address, error) {
+	owner, err := n.registry.Owner(n.Name)
+	if err != nil {
+		return zeroAddress, err
+	}
+	if owner == zeroAddress {
+		return owner, err
+	}
 	return n.registrar.Owner(n.Label)
 }
 

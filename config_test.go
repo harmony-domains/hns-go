@@ -26,7 +26,6 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	zeroAddress := common.HexToAddress("0x0000000000000000000000000000000000000000")
 	// config := getConfig()
 	// Test we can connect to the client
 	// Test we can get configured contract addresses and they match
@@ -68,6 +67,13 @@ func TestConfig(t *testing.T) {
 	testOwnerBaseRegistrar, err := baseRegistrar.OwnerOf(nil, testLabelHashBigInt)
 	assert.Equal(t, err, nil, "Error getting test owner from ENSRegistry")
 	assert.Equal(t, testOwnerBaseRegistrar, tconfig.NameWrapper, "Incorrect Owner for test.country node")
+	// testxyz is owned by Namewrapper using BaseRegistrar TokenId
+	testxyzLabelHash, err := LabelHash("testxyz")
+	assert.Equal(t, err, nil, "Error getting LabelHash for testxyz")
+	testxyzLabelHashBigInt := new(big.Int).SetBytes(testxyzLabelHash[:])
+	testxyzOwnerBaseRegistrar, err := baseRegistrar.OwnerOf(nil, testxyzLabelHashBigInt)
+	assert.Equal(t, err, nil, "Error getting testxyz owner from ENSRegistry")
+	assert.Equal(t, testxyzOwnerBaseRegistrar, zeroAddress, "Incorrect Owner for testxyz.country node")
 
 	// unregistered Tier 2 have no owners
 	unregisteredNameHash, err := NameHash("unregistered.country")

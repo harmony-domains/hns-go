@@ -61,6 +61,32 @@ func TestName(t *testing.T) {
 	assert.Equal(t, tconfig.PublicResolver, resolverAddress, "Failed to obtain correct resolver address")
 }
 
+func TestUnregisteredName1(t *testing.T) {
+	name, err := NewName(tclient, "testxyz.country")
+	require.Nil(t, err, "Failed to create name")
+
+	registrant, err := name.Registrant()
+	require.Nil(t, err, "Failed to obtain registrant")
+	assert.Equal(t, zeroAddress, registrant, "Failed to obtain correct registrant")
+
+	controller, err := name.Controller()
+	require.Nil(t, err, "Failed to obtain controller")
+	assert.Equal(t, zeroAddress, controller, "Failed to obtain correct controller")
+
+	_, err = name.Expires()
+	assert.Equal(t, "not registered", err.Error(), "Failed to obtain expiry")
+
+	// assert.Equal(t, tconfig.Expiry, expiry, "Failed to obtain correct expiry")
+
+	registrationInterval, err := name.RegistrationInterval()
+	// assert.Equal(t, "not registered", err.Error(), "Failed to obtain registration interval")
+	assert.Equal(t, tconfig.RegistrationInterval, registrationInterval, "Failed to obtain correct registration interval")
+
+	resolverAddress, err := name.ResolverAddress()
+	require.Nil(t, err, "Failed to obtain resolver address")
+	assert.Equal(t, zeroAddress, resolverAddress, "Failed to obtain correct resolver address")
+}
+
 func TestNameExpiry(t *testing.T) {
 	domain := unregisteredDomain()
 	name, err := NewName(tclient, domain)
@@ -87,43 +113,41 @@ func TestInvalidName(t *testing.T) {
 	require.Equal(t, err.Error(), "name is not valid according to the rules of the registrar (too short, invalid characters, etc.)")
 }
 
-// func TestNameRegistration(t *testing.T) {
-// 	registrant := common.HexToAddress("388Ea662EF2c223eC0B047D41Bf3c0f362142ad5")
-// 	if !hasPrivateKey(registrant) {
-// 		t.Skip()
-// 	}
-// 	domain := unregisteredDomain(client)
-// 	name, err := NewName(client, domain)
-// 	require.Nil(t, err, "Failed to create name")
+func TestNameRegistration(t *testing.T) {
+	registrant := tconfig.testAccounts.aliceAddress
+	registrantKey := tconfig.testAccounts.alicePrivateKey
+	domain := unregisteredDomain()
+	name, err := NewName(tclient, domain)
+	require.Nil(t, err, "Failed to create name")
 
-// 	// Register stage 1
-// 	// opts, err := generateTxOpts(client, registrant, "0")
-// 	require.Nil(t, err, "Failed to generate transaction options")
-// 	// tx, secret, err := name.RegisterStageOne(registrant, opts)
-// 	// require.Nil(t, err, "Failed to send stage one transaction")
-// 	// // Wait until mined
-// 	// waitForTransaction(client, tx.Hash())
+	// Register stage 1
+	opts, err := generateTxOpts(registrant, registrantKey, "0")
+	require.Nil(t, err, "Failed to generate transaction options")
+	tx, secret, err := name.RegisterStageOne(registrant, tconfig.duration, opts)
+	require.Nil(t, err, "Failed to send stage one transaction")
+	// // Wait until mined
+	waitForTransaction(tx.Hash())
 
-// 	// Wait until ready to submit stage 2
-// 	interval, err := name.RegistrationInterval()
-// 	require.Nil(t, err, "Failed to obtain registration interval")
-// 	time.Sleep(interval)
-// 	// Sleep for 1 more minute to ensure we are over the interval
-// 	time.Sleep(60 * time.Second)
+	// Wait until ready to submit stage 2
+	interval, err := name.RegistrationInterval()
+	require.Nil(t, err, "Failed to obtain registration interval")
+	time.Sleep(interval)
+	// Sleep for 10 more seconds to ensure we are over the interval
+	time.Sleep(10 * time.Second)
 
-// 	// Register stage 2
-// 	// opts, err = generateTxOpts(client, registrant, "0.1 Ether")
-// 	require.Nil(t, err, "Failed to generate transaction options")
-// 	// tx, err = name.RegisterStageTwo(registrant, secret, opts)
-// 	// require.Nil(t, err, "Failed to send stage two transaction")
-// 	// // Wait until mined
-// 	// waitForTransaction(client, tx.Hash())
+	// Register stage 2
+	opts, err = generateTxOpts(registrant, registrantKey, "1200 Ether")
+	require.Nil(t, err, "Failed to generate transaction options")
+	tx, err = name.RegisterStageTwo(registrant, tconfig.duration, secret, opts)
+	require.Nil(t, err, "Failed to send stage two transaction")
+	// // Wait until mined
+	waitForTransaction(tx.Hash())
 
-// 	// Confirm registered
-// 	registeredRegistrant, err := name.Registrant()
-// 	require.Nil(t, err, "Failed to obtain registrant")
-// 	assert.Equal(t, registrant, registeredRegistrant, "failed to register name")
-// }
+	// Confirm registered
+	registeredRegistrant, err := name.Registrant()
+	require.Nil(t, err, "Failed to obtain registrant")
+	assert.Equal(t, tconfig.NameWrapper, registeredRegistrant, "failed to register name")
+}
 
 // func TestNameRegistrationStageTwoNoStageOne(t *testing.T) {
 // 	// registrant := common.HexToAddress("388Ea662EF2c223eC0B047D41Bf3c0f362142ad5")
@@ -502,7 +526,7 @@ func generateTxOpts(sender common.Address, privateKey *ecdsa.PrivateKey, valueSt
 	// if err != nil {
 	// 	return nil, fmt.Errorf("Failed to obtain private key for %x", sender)
 	// }
-	signer := keySigner(big.NewInt(3), privateKey)
+	signer := keySigner(big.NewInt(tconfig.chainID), privateKey)
 	if signer == nil {
 		return nil, errors.New("no signer")
 	}

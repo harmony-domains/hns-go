@@ -49,10 +49,15 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/spf13/viper"
 )
 
+// Constants
+var zeroAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")
+
+// Configuration
 type testAccounts struct {
 	deployerAddress     common.Address
 	deployerPrivateKey  *ecdsa.PrivateKey
@@ -94,6 +99,7 @@ type tconfigStruct struct {
 	Expiry               time.Time
 	RegistrationInterval time.Duration
 	clientURL            string
+	chainID              int64
 	client               *ethclient.Client
 	TLD                  string
 	duration             *big.Int
@@ -128,25 +134,25 @@ func getTConfig() *tconfigStruct {
 	viper.ReadInConfig()
 	// set test accounts
 	tconfig.testAccounts.deployerAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_DEPLOYER"))
-	tconfig.testAccounts.deployerPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_DEPLOYER"))
+	tconfig.testAccounts.deployerPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_DEPLOYER"))
 	tconfig.testAccounts.operatorAAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPEATORA"))
-	tconfig.testAccounts.operatorAPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORA"))
+	tconfig.testAccounts.operatorAPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_OPERATORA"))
 	tconfig.testAccounts.operatorBAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPERATORB"))
-	tconfig.testAccounts.operatorBPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORB"))
+	tconfig.testAccounts.operatorBPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_OPERATORB"))
 	tconfig.testAccounts.operatorCAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_OPERATORC"))
-	tconfig.testAccounts.operatorCPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_OPERATORC"))
+	tconfig.testAccounts.operatorCPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_OPERATORC"))
 	tconfig.testAccounts.aliceAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_ALICE"))
-	tconfig.testAccounts.alicePrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_ALICE"))
+	tconfig.testAccounts.alicePrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_ALICE"))
 	tconfig.testAccounts.bobAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_BOB"))
-	tconfig.testAccounts.bobPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_BOB"))
+	tconfig.testAccounts.bobPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_BOB"))
 	tconfig.testAccounts.carolAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_CAROL"))
-	tconfig.testAccounts.carolPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_CAROL"))
+	tconfig.testAccounts.carolPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_CAROL"))
 	tconfig.testAccounts.doraAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_DORA"))
-	tconfig.testAccounts.doraPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_DORA"))
+	tconfig.testAccounts.doraPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_DORA"))
 	tconfig.testAccounts.ernieAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_ERNIE"))
-	tconfig.testAccounts.erniePrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_FRANK"))
+	tconfig.testAccounts.erniePrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_FRANK"))
 	tconfig.testAccounts.fredAddress = common.HexToAddress(viper.GetString("TEST_ADDRESS_FRED"))
-	tconfig.testAccounts.fredPrivateKey = decode(viper.GetString("TEST_PRIVATE_KEY_ERNIE"))
+	tconfig.testAccounts.fredPrivateKey, _ = crypto.HexToECDSA(viper.GetString("TEST_PRIVATE_KEY_ERNIE"))
 	// set additional test configuration
 	tconfig.PriceOracle = common.HexToAddress(viper.GetString("TEST_PRICE_ORACLE"))
 	tconfig.USDOracle = common.HexToAddress(viper.GetString("TEST_USD_ORACLE"))
@@ -162,6 +168,7 @@ func getTConfig() *tconfigStruct {
 	tconfig.Expiry = time.Unix(viper.GetInt64("TEST_EXPIRY"), 0)
 	tconfig.RegistrationInterval = viper.GetDuration("TEST_REGISTRATION_INTERVAL") * time.Second
 	tconfig.clientURL = viper.GetString("TEST_CLIENT_URL")
+	tconfig.chainID = viper.GetInt64("TEST_CHAIN_ID")
 	client, err := ethclient.Dial(tconfig.clientURL)
 	if err != nil {
 		fmt.Println(err)
