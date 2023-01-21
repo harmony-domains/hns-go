@@ -195,7 +195,7 @@ func TestNameRegistrationNoValue(t *testing.T) {
 	opts, err = generateTxOpts(registrant, registrantKey, "0")
 	require.Nil(t, err, "Failed to generate transaction options")
 	_, err = name.RegisterStageTwo(registrant, tconfig.duration, secret, opts)
-	assert.Equal(t, err.Error(), "not enough funds to cover minimum duration of 672h0m0s")
+	assert.Equal(t, err.Error(), "VM Exception while processing transaction: revert")
 }
 
 func TestNameRegistrationNoInterval(t *testing.T) {
@@ -346,13 +346,41 @@ func TestNameExtensionNotRegistered(t *testing.T) {
 // 	name, err := NewName(tclient, domain)
 // 	require.Nil(t, err, "Failed to create name")
 
+// 	// Register stage 1
+// 	opts, err := generateTxOpts(registrant, registrantKey, "0")
+// 	require.Nil(t, err, "Failed to generate transaction options")
+// 	tx, secret, err := name.RegisterStageOne(registrant, tconfig.duration, opts)
+// 	require.Nil(t, err, "Failed to send stage one transaction")
+// 	// // Wait until mined
+// 	waitForTransaction(tx.Hash())
+
+// 	// Wait until ready to submit stage 2
+// 	interval, err := name.RegistrationInterval()
+// 	require.Nil(t, err, "Failed to obtain registration interval")
+// 	time.Sleep(interval)
+// 	// Sleep for 10 more seconds to ensure we are over the interval
+// 	time.Sleep(10 * time.Second)
+
+// 	// Register stage 2
+// 	opts, err = generateTxOpts(registrant, registrantKey, "1200 Ether")
+// 	require.Nil(t, err, "Failed to generate transaction options")
+// 	tx, err = name.RegisterStageTwo(registrant, tconfig.duration, secret, opts)
+// 	require.Nil(t, err, "Failed to send stage two transaction")
+// 	// // Wait until mined
+// 	waitForTransaction(tx.Hash())
+
+// 	// Confirm registered
+// 	registeredRegistrant, err := name.Registrant()
+// 	require.Nil(t, err, "Failed to obtain registrant")
+// 	assert.Equal(t, tconfig.NameWrapper, registeredRegistrant, "failed to register name")
+
 // 	sub := unregisteredDomain()
 // 	sub = strings.TrimSuffix(sub, ".country")
 
-// 	opts, err := generateTxOpts(registrant, registrantKey, "0")
+// 	opts, err = generateTxOpts(registrant, registrantKey, "0")
 // 	require.Nil(t, err, "Failed to generate transaction options")
 
-// 	tx, err := name.CreateSubdomain(sub, registrant, opts)
+// 	tx, err = name.CreateSubdomain(sub, registrant, opts)
 // 	require.Nil(t, err, "Failed to send transaction")
 // 	// Wait until mined
 // 	waitForTransaction(tx.Hash())

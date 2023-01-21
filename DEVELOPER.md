@@ -23,7 +23,7 @@ go build
 
 # Test
 ## Notes:
-### Modify your eth_client as needed `client, _ := ethclient.Dial("https://ropsten.infura.io/v3/831a5442dc2e4536a9f8dee4ea1707a6")`
+### Modify your eth_client as needed `client, _ := ethclient.Dial("http://localhost:8545")`
 ### If running locally will need to deploy your contracts using https://github.com/polymorpher/ens-deployer
 ### You may also need to create test data by registering domains
 

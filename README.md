@@ -36,21 +36,21 @@ go get github.com/jw-1ns/go-1ns
 The most commonly-used feature of 1ns is resolution: converting an 1ns name to an Ethereum address.  `go-1ns` provides a simple call to allow this:
 
 ```go
-address, err := 1ns.Resolve(client, domain)
+address, err := onens.Resolve(client, domain)
 ```
 
-where `client` is a connection to an Ethereum client and `domain` is the fully-qualified name you wish to resolve (e.g. `foo.mydomain.eth`) (full examples for using this are given in the [Example](#Example) section below).
+where `client` is a connection to an Harmony client and `domain` is the fully-qualified name you wish to resolve (e.g. `foo.mydomain.country`) (full examples for using this are given in the [Example](#Example) section below).
 
 The reverse process, converting an address to an 1ns name, is just as simple:
 
 ```go
-domain, err := 1ns.ReverseResolve(client, address)
+domain, err := onens.ReverseResolve(client, address)
 ```
 
-Note that if the address does not have a reverse resolution this will return "".  If you just want a string version of an address for on-screen display then you can use `1ns.Format()`, for example:
+Note that if the address does not have a reverse resolution this will return "".  If you just want a string version of an address for on-screen display then you can use `onens.Format()`, for example:
 
 ```go
-fmt.Printf("The address is %s\n", 1ns.Format(client, address))
+fmt.Printf("The address is %s\n", onens.Format(client, address))
 ```
 
 This will carry out reverse resolution of the address and print the name if present; if not it will print a formatted version of the address.
@@ -58,13 +58,13 @@ This will carry out reverse resolution of the address and print the name if pres
 
 ### Management of names
 
-A top-level name is one that sits directly underneath `.eth`, for example `mydomain.eth`.  Lower-level names, such as `foo.mydomain.eth` are covered in the following section.  `go-1ns` provides a simplified `Name` interface to manage top-level, removing the requirement to understand registrars, controllers, _etc._
+A top-level name is one that sits directly underneath `.country`, for example `mydomain.country`.  Lower-level names, such as `foo.mydomain.country` are covered in the following section.  `go-1ns` provides a simplified `Name` interface to manage top-level, removing the requirement to understand registrars, controllers, _etc._
 
 Starting out with names in `go-1ns` is easy:
 
 ```go
-client, err := ethclient.Dial("https://infura.io/v3/SECRET")
-name, err := 1ns.NewName(client, "mydomain.eth")
+client, err := ethclient.Dial("https://api.s0.t.hmny.io")
+name, err := onens.NewName(client, "mydomain.country")
 ```
 
 Addresses can be set and obtained using the address functions, for example to get an address:
@@ -94,26 +94,26 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	1ns "github.com/jw-1ns/go-1ns"
+	onens "github.com/jw-1ns/go-1ns"
 )
 
 func main() {
 	// Replace SECRET with your own access token for this example to work.
-	client, err := ethclient.Dial("https://mainnet.infura.io/v3/SECRET")
+	client, err := ethclient.Dial("https://api.s0.t.hmny.io")
 	if err != nil {
 		panic(err)
 	}
 
 	// Resolve a name to an address.
-	domain := "ethereum.eth"
-	address, err := 1ns.Resolve(client, domain)
+	domain := "test.country"
+	address, err := onens.Resolve(client, domain)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("Address of %s is %s\n", domain, address.Hex())
 
 	// Reverse resolve an address to a name.
-	reverse, err := 1ns.ReverseResolve(client, address)
+	reverse, err := onens.ReverseResolve(client, address)
 	if err != nil {
 		panic(err)
 	}
