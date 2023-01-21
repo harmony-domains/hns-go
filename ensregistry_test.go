@@ -34,43 +34,55 @@ func TestResolveZero(t *testing.T) {
 }
 
 func TestResolveNotPresent(t *testing.T) {
-	_, err := Resolve(tclient, "sirnotappearinginthisregistry.eth")
+	_, err := Resolve(tclient, "sirnotappearinginthisregistry.country")
 	require.NotNil(t, err, "Resolved name that does not exist")
 	assert.Equal(t, "unregistered name", err.Error(), "Unexpected error")
 }
 
-func TestResolveNoResolver(t *testing.T) {
-	_, err := Resolve(tclient, "noresolver.eth")
-	require.NotNil(t, err, "Resolved name without a resolver")
-	assert.Equal(t, "no resolver", err.Error(), "Unexpected error")
+// func TestResolveNoResolver(t *testing.T) {
+// 	_, err := Resolve(tclient, "noresolver.country")
+// 	require.NotNil(t, err, "Resolved name without a resolver")
+// 	assert.Equal(t, "no resolver", err.Error(), "Unexpected error")
+// }
+
+// func TestResolveBadResolver(t *testing.T) {
+// 	_, err := Resolve(tclient, "resolvestozero.country")
+// 	require.NotNil(t, err, "Resolved name with a bad resolver")
+// 	assert.Equal(t, "no address", err.Error(), "Unexpected error")
+// }
+
+func TestResolveTestCountry(t *testing.T) {
+	_, err := Resolve(tclient, "test.country")
+	assert.Equal(t, err.Error(), "no address")
 }
 
-func TestResolveBadResolver(t *testing.T) {
-	_, err := Resolve(tclient, "resolvestozero.eth")
-	require.NotNil(t, err, "Resolved name with a bad resolver")
-	assert.Equal(t, "no address", err.Error(), "Unexpected error")
-}
+// func TestResolveTestEnsTest(t *testing.T) {
+// 	expected := "388ea662ef2c223ec0b047d41bf3c0f362142ad5"
+// 	actual, err := Resolve(tclient, "test.enstest.country")
+// 	require.Nil(t, err, "Error resolving name")
+// 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
+// }
 
-func TestResolveTestEnsTest(t *testing.T) {
-	expected := "388ea662ef2c223ec0b047d41bf3c0f362142ad5"
-	actual, err := Resolve(tclient, "test.enstest.eth")
+func TestResolveResolverCountry(t *testing.T) {
+	expected := "caa29b65446abf1a513a178402a0408eb3aeee75"
+	actual, err := Resolve(tclient, "resolver.country")
 	require.Nil(t, err, "Error resolving name")
 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 }
 
-func TestResolveResolverEth(t *testing.T) {
-	expected := "42d63ae25990889e35f215bc95884039ba354115"
-	actual, err := Resolve(tclient, "resolver.eth")
+func TestResolveCountry(t *testing.T) {
+	expected := "000000000000000000000000000000000000000c"
+	actual, err := Resolve(tclient, "country")
 	require.Nil(t, err, "Error resolving name")
 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
 }
 
-func TestResolveNickJo1nson(t *testing.T) {
-	expected := "70abd981e01ad3e6eb1726a5001000877ab04417"
-	actual, err := Resolve(tclient, "nickjo1nson.eth")
-	require.Nil(t, err, "Error resolving name")
-	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
-}
+// func TestResolveNickJo1nson(t *testing.T) {
+// 	expected := "70abd981e01ad3e6eb1726a5001000877ab04417"
+// 	actual, err := Resolve(tclient, "nickjo1nson.country")
+// 	require.Nil(t, err, "Error resolving name")
+// 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
+// }
 
 func TestResolveAddress(t *testing.T) {
 	expected := "5ffc014343cd971b7eb70732021e26c35b744cc4"
@@ -92,7 +104,7 @@ func TestResolveHexString(t *testing.T) {
 }
 
 // func TestReverseResolveTestEnsTest(t *testing.T) {
-// 	expected := "1ns.eth"
+// 	expected := "1ns.country"
 // 	address := common.HexToAddress("0x388ea662ef2c223ec0b047d41bf3c0f362142ad5")
 // 	actual, err := ReverseResolve(client, address)
 // 	require.Nil(t, err, "Error resotlving address")

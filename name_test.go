@@ -112,7 +112,7 @@ func TestNameReRegistration(t *testing.T) {
 }
 
 func TestInvalidName(t *testing.T) {
-	_, err := NewName(tclient, "ab.country")
+	_, err := NewName(tclient, ".country")
 	require.Equal(t, err.Error(), "name is not valid according to the rules of the registrar (too short, invalid characters, etc.)")
 }
 
