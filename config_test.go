@@ -21,7 +21,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/jw-1ns/go-1ns/contracts/baseregistrar"
-	"github.com/jw-1ns/go-1ns/contracts/ensregistry"
+	"github.com/jw-1ns/go-1ns/contracts/registry"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,50 +36,50 @@ func TestConfig(t *testing.T) {
 	assert.Equal(t, err, nil, "Error getting BaseRegistrar")
 	baseRegistrarENS, err := baseRegistrar.Ens(nil)
 	assert.Equal(t, err, nil, "Error getting ENS from baseRegistrar")
-	assert.Equal(t, baseRegistrarENS, tconfig.ENSRegistry, "Incorrect ENS for baseRegistrar")
+	assert.Equal(t, baseRegistrarENS, tconfig.Registry, "Incorrect ENS for baseRegistrar")
 
-	//Check that the ENSRegistry has test owners for domains set correctly
+	//Check that the Registry has test owners for domains set correctly
 	deployerAddress := common.HexToAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
-	ensRegistry, err := ensregistry.NewContract(tconfig.ENSRegistry, tclient)
-	assert.Equal(t, err, nil, "Error getting ENSRegistry")
+	registry, err := registry.NewContract(tconfig.Registry, tclient)
+	assert.Equal(t, err, nil, "Error getting Registry")
 	// country is owned by the BaseRegistrar
 	countryNameHash, err := NameHash("country")
 	assert.Equal(t, err, nil, "Error getting Namehash for country")
-	countryOwner, err := ensRegistry.Owner(nil, countryNameHash)
-	assert.Equal(t, err, nil, "Error getting resolver node owner from ENSRegistry")
+	countryOwner, err := registry.Owner(nil, countryNameHash)
+	assert.Equal(t, err, nil, "Error getting resolver node owner from Registry")
 	assert.Equal(t, countryOwner, tconfig.BaseRegistrar, "Incorrect Owner for country node")
 	// resolver is owned by Deployer
 	resolverNameHash, err := NameHash("resolver")
 	assert.Equal(t, err, nil, "Error getting Namehash for resolver")
-	resolverOwner, err := ensRegistry.Owner(nil, resolverNameHash)
-	assert.Equal(t, err, nil, "Error getting resolver node owner from ENSRegistry")
+	resolverOwner, err := registry.Owner(nil, resolverNameHash)
+	assert.Equal(t, err, nil, "Error getting resolver node owner from Registry")
 	assert.Equal(t, resolverOwner, deployerAddress, "Incorrect Owner for resolver node")
 	// test.country is owned by NameWrapper
 	tcNameHash, err := NameHash("test.country")
 	assert.Equal(t, err, nil, "Error getting nameHash for test.country")
-	testCountryOwner, err := ensRegistry.Owner(nil, tcNameHash)
-	assert.Equal(t, err, nil, "Error getting test.country node owner fromm ENSRegistry")
+	testCountryOwner, err := registry.Owner(nil, tcNameHash)
+	assert.Equal(t, err, nil, "Error getting test.country node owner fromm Registry")
 	assert.Equal(t, testCountryOwner, tconfig.NameWrapper, "Incorrect Owner for test.country node")
 	// test is owned by Namewrapper using BaseRegistrar TokenId
 	testLabelHash, err := LabelHash("test")
 	assert.Equal(t, err, nil, "Error getting LabelHash for test")
 	testLabelHashBigInt := new(big.Int).SetBytes(testLabelHash[:])
 	testOwnerBaseRegistrar, err := baseRegistrar.OwnerOf(nil, testLabelHashBigInt)
-	assert.Equal(t, err, nil, "Error getting test owner from ENSRegistry")
+	assert.Equal(t, err, nil, "Error getting test owner from Registry")
 	assert.Equal(t, testOwnerBaseRegistrar, tconfig.NameWrapper, "Incorrect Owner for test.country node")
 	// testxyz is owned by Namewrapper using BaseRegistrar TokenId
 	testxyzLabelHash, err := LabelHash("testxyz")
 	assert.Equal(t, err, nil, "Error getting LabelHash for testxyz")
 	testxyzLabelHashBigInt := new(big.Int).SetBytes(testxyzLabelHash[:])
 	testxyzOwnerBaseRegistrar, err := baseRegistrar.OwnerOf(nil, testxyzLabelHashBigInt)
-	assert.Equal(t, err, nil, "Error getting testxyz owner from ENSRegistry")
+	assert.Equal(t, err, nil, "Error getting testxyz owner from Registry")
 	assert.Equal(t, testxyzOwnerBaseRegistrar, zeroAddress, "Incorrect Owner for testxyz.country node")
 
 	// unregistered Tier 2 have no owners
 	unregisteredNameHash, err := NameHash("unregistered.country")
 	assert.Equal(t, err, nil, "Error getting nameHash for unregistered.country")
-	unregisteredCountryOwner, err := ensRegistry.Owner(nil, unregisteredNameHash)
-	assert.Equal(t, err, nil, "Error getting unregistered.country node owner from ENSRegistry")
+	unregisteredCountryOwner, err := registry.Owner(nil, unregisteredNameHash)
+	assert.Equal(t, err, nil, "Error getting unregistered.country node owner from Registry")
 	assert.Equal(t, unregisteredCountryOwner, zeroAddress, "Incorrect Owner for unregistered.country node")
 
 }

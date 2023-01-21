@@ -2,7 +2,7 @@
 
 ## Development Approach
 
-For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-1ns](https://github.com/jw-ens-domains/coredns-1ns) which interacts with [go-1ns](https://github.com/jw-ens-domains/go-1ns) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [go-1ns](https://github.com/jw-ens-domains/go-1ns) will have a focus of looking up dns entries using the PubliceRsolver and ENSregistry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
+For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-1ns](https://github.com/jw-ens-domains/coredns-1ns) which interacts with [go-1ns](https://github.com/jw-ens-domains/go-1ns) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [go-1ns](https://github.com/jw-ens-domains/go-1ns) will have a focus of looking up dns entries using the PubliceRsolver and Registry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
 
 ## Geting Started 
 
@@ -91,7 +91,12 @@ view go-1ns docs at
 
 ## Publishing a module
 
-See [here](https://go.dev/doc/modules/publishing).
+See [here](https://go.dev/doc/modules/publishing) and [here](https://go.dev/blog/publishing-go-modules).
+
+```
+git tag v1.0.0
+git push origin v1.0.0
+```
 
 
 

@@ -86,7 +86,7 @@ type tconfigStruct struct {
 	testAccounts
 	PriceOracle          common.Address
 	USDOracle            common.Address
-	ENSRegistry          common.Address
+	Registry             common.Address
 	FIFSRegistrar        common.Address
 	ReverseRegistrar     common.Address
 	BaseRegistrar        common.Address
@@ -117,7 +117,7 @@ type commitmentData struct {
 
 // Configuration Structure
 type configStruct struct {
-	ENSRegistry common.Address
+	Registry common.Address
 	commitmentData
 }
 
@@ -156,7 +156,7 @@ func getTConfig() *tconfigStruct {
 	// set additional test configuration
 	tconfig.PriceOracle = common.HexToAddress(viper.GetString("TEST_PRICE_ORACLE"))
 	tconfig.USDOracle = common.HexToAddress(viper.GetString("TEST_USD_ORACLE"))
-	tconfig.ENSRegistry = common.HexToAddress(viper.GetString("TEST_ENS_REGISTRY"))
+	tconfig.Registry = common.HexToAddress(viper.GetString("TEST_ENS_REGISTRY"))
 	tconfig.FIFSRegistrar = common.HexToAddress(viper.GetString("TEST_FIFS_REGISTRAR"))
 	tconfig.ReverseRegistrar = common.HexToAddress(viper.GetString("TEST_REVERSE_REGISTRAR"))
 	tconfig.BaseRegistrar = common.HexToAddress(viper.GetString("TEST_BASE_REGISTRAR"))
@@ -190,7 +190,7 @@ func getConfig() *configStruct {
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig()
 	// set configuration
-	config.ENSRegistry = common.HexToAddress(viper.GetString("ENS_REGISTRY"))
+	config.Registry = common.HexToAddress(viper.GetString("ENS_REGISTRY"))
 	// Set Commitment Data
 	config.commitmentData.secret = [32]byte{}
 	config.commitmentData.publicResover = common.HexToAddress(viper.GetString("PUBLIC_RESOLVER"))
