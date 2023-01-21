@@ -7,7 +7,7 @@
 [![codecov.io](https://img.shields.io/codecov/c/github/jw-1ns/go-1ns.svg)](https://codecov.io/github/jw-1ns/go-1ns)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jw-1ns/go-1ns)](https://goreportcard.com/report/github.com/jw-1ns/go-1ns)
 
-Go module to simplify interacting with the [Harmony Name Service](https://1ns.domains/) contracts.
+Go module to simplify interacting with the [1 Name Service](https://1ns.domains/) contracts.
 Initial version copied from [go-ens](https://github.com/wealdtech/go-ens)
 
 
@@ -29,7 +29,7 @@ go get github.com/jw-1ns/go-1ns
 
 ## Usage
 
-`go-1ns` provides simple access to the [Harmony Name Service](https://1ns.domains/) (1ns) contracts.
+`go-1ns` provides simple access to the [1 Name Service](https://1ns.domains/) (1ns) contracts.
 
 ### Resolution
 
@@ -135,4 +135,4 @@ Contributions welcome. Please check out [the issues](https://github.com/jw-1ns/g
 
 ## License
 
-[Apache-2.0](LICENSE) © 2022 Harmony Domains
+[Apache-2.0](LICENSE) © 2022 John Whitton
