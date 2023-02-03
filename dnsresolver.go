@@ -15,6 +15,7 @@
 package onens
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -40,6 +41,7 @@ func NewDNSResolver(backend bind.ContractBackend, domain string) (*DNSResolver, 
 		return nil, err
 	}
 	address, err := registry.ResolverAddress(domain)
+	fmt.Printf("NEWDNSResolver address: %+v\n", address)
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +64,7 @@ func NewDNSResolverAt(backend bind.ContractBackend, domain string, address commo
 	if !supported {
 		return nil, fmt.Errorf("%s is not a DNS resolver contract", address.Hex())
 	}
+	fmt.Println("NEWDNSResolverAt is supported")
 
 	return &DNSResolver{
 		backend:      backend,
@@ -74,6 +77,10 @@ func NewDNSResolverAt(backend bind.ContractBackend, domain string, address commo
 // Record obtains an RRSet for a name
 func (r *DNSResolver) Record(name string, rrType uint16) ([]byte, error) {
 	nameHash, err := NameHash(r.domain)
+	fmt.Printf("name: %+v\n", name)
+	fmt.Printf("r.domain: %+v\n", r.domain)
+	fmt.Printf("nameHash: %+v\n", nameHash)
+	fmt.Printf("DNSWireFormatDomainHash(name): %+v\n", DNSWireFormatDomainHash(name))
 	if err != nil {
 		return nil, err
 	}
@@ -92,20 +99,40 @@ func (r *DNSResolver) HasRecords(name string) (bool, error) {
 // SetRecords sets one or more RRSets
 func (r *DNSResolver) SetRecords(opts *bind.TransactOpts, data []byte) (*types.Transaction, error) {
 	nameHash, err := NameHash(r.domain)
+	// nameHashBack := []byte(string([]byte(nameHash[:])))
+	// nameHashString := string([]byte(nameHash[:]))
+	nameHashHex := hex.EncodeToString([]byte(nameHash[:]))
+	nameHashBack2, err := hex.DecodeString(nameHashHex)
+	// nameHashHexStringBack := string(nameHashBack2)
+	fmt.Printf("r.domain: %+v\n", r.domain)
+	fmt.Printf("nameHash: %+v\n", nameHash)
+	// fmt.Printf("nameHash back: %v\n", nameHashBack)
+	// fmt.Printf("nameHash string: %+v\n", nameHashString)
+	fmt.Printf("nameHash hex: %+v\n", nameHashHex)
+	// fmt.Printf("nameHash hex back: %+v\n", nameHashHexStringBack)
+	fmt.Printf("nameHash back2: %v\n", nameHashBack2)
+
+	// existingRec, err := r.Contract.DnsRecord(nil, nameHash, DNSWireFormatDomainHash("a.test.country."), 1)
+	// if err != nil {
+	// 	fmt.Printf("err: %+v\n", err)
+	// }
+	// fmt.Printf("existingRec: %+v\n", existingRec)
 	if err != nil {
 		return nil, err
 	}
+	// return r.Contract.SetDNSRecords(opts, nameHash2, data)
 	return r.Contract.SetDNSRecords(opts, nameHash, data)
 }
 
-// ClearDNSZone clears all records in the zone
-// func (r *DNSResolver) ClearDNSZone(opts *bind.TransactOpts) (*types.Transaction, error) {
-// 	nameHash, err := NameHash(r.domain)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return r.Contract.ClearDNSZone(opts, nameHash)
-// }
+// ClearRecords clears all records for a domain
+func (r *DNSResolver) ClearRecords(opts *bind.TransactOpts) (*types.Transaction, error) {
+	nameHash, err := NameHash(r.domain)
+	// nameHash, err := NameHash("badtest.country")
+	if err != nil {
+		return nil, err
+	}
+	return r.Contract.ClearRecords(opts, nameHash)
+}
 
 // Zonehash returns the zone hash of the domain
 func (r *DNSResolver) Zonehash() ([]byte, error) {
