@@ -98,14 +98,14 @@ func (r *DNSResolver) SetRecords(opts *bind.TransactOpts, data []byte) (*types.T
 	return r.Contract.SetDNSRecords(opts, nameHash, data)
 }
 
-// ClearDNSZone clears all records in the zone
-// func (r *DNSResolver) ClearDNSZone(opts *bind.TransactOpts) (*types.Transaction, error) {
-// 	nameHash, err := NameHash(r.domain)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return r.Contract.ClearDNSZone(opts, nameHash)
-// }
+// ClearRecords clears all records for a domain
+func (r *DNSResolver) ClearRecords(opts *bind.TransactOpts) (*types.Transaction, error) {
+	nameHash, err := NameHash(r.domain)
+	if err != nil {
+		return nil, err
+	}
+	return r.Contract.ClearRecords(opts, nameHash)
+}
 
 // Zonehash returns the zone hash of the domain
 func (r *DNSResolver) Zonehash() ([]byte, error) {
