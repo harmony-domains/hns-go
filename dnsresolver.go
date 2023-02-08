@@ -1,5 +1,4 @@
 // Copyright 2017-2019 Weald Technology Trading
-// Modified December 2022: John Whitton https://github.com/john_whitton
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"fmt"
@@ -22,7 +21,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/dnsresolver"
+	"github.com/jw-1ns/go-1ns/contracts/publicresolver"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -30,7 +29,7 @@ import (
 type DNSResolver struct {
 	backend      bind.ContractBackend
 	domain       string
-	Contract     *dnsresolver.Contract
+	Contract     *publicresolver.Contract
 	ContractAddr common.Address
 }
 
@@ -50,7 +49,7 @@ func NewDNSResolver(backend bind.ContractBackend, domain string) (*DNSResolver, 
 
 // NewDNSResolverAt creates a new DNS resolver for a given domain at a given address
 func NewDNSResolverAt(backend bind.ContractBackend, domain string, address common.Address) (*DNSResolver, error) {
-	contract, err := dnsresolver.NewContract(address, backend)
+	contract, err := publicresolver.NewContract(address, backend)
 	if err != nil {
 		return nil, err
 	}
@@ -99,13 +98,13 @@ func (r *DNSResolver) SetRecords(opts *bind.TransactOpts, data []byte) (*types.T
 	return r.Contract.SetDNSRecords(opts, nameHash, data)
 }
 
-// ClearDNSZone clears all records in the zone
-func (r *DNSResolver) ClearDNSZone(opts *bind.TransactOpts) (*types.Transaction, error) {
+// ClearRecords clears all records for a domain
+func (r *DNSResolver) ClearRecords(opts *bind.TransactOpts) (*types.Transaction, error) {
 	nameHash, err := NameHash(r.domain)
 	if err != nil {
 		return nil, err
 	}
-	return r.Contract.ClearDNSZone(opts, nameHash)
+	return r.Contract.ClearRecords(opts, nameHash)
 }
 
 // Zonehash returns the zone hash of the domain

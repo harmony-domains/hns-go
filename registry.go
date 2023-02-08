@@ -13,19 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
-	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/auctionregistrar"
-	"github.com/harmony-domains/hns-go/contracts/registry"
-	"github.com/harmony-domains/hns-go/util"
+	"github.com/jw-1ns/go-1ns/contracts/baseregistrar"
+	"github.com/jw-1ns/go-1ns/contracts/registry"
+	"github.com/jw-1ns/go-1ns/util"
+	"github.com/pkg/errors"
 )
 
 // Registry is the structure for the registry contract
@@ -37,23 +37,14 @@ type Registry struct {
 
 // NewRegistry obtains the ENS registry
 func NewRegistry(backend bind.ContractBackend) (*Registry, error) {
-	address, err := RegistryContractAddress(backend)
-	if err != nil {
-		return nil, err
-	}
-	return NewRegistryAt(backend, address)
-}
-
-// NewRegistryAt obtains the ENS registry at a given address
-func NewRegistryAt(backend bind.ContractBackend, address common.Address) (*Registry, error) {
-	contract, err := registry.NewContract(address, backend)
+	contract, err := registry.NewContract(config.Registry, backend)
 	if err != nil {
 		return nil, err
 	}
 	return &Registry{
 		backend:      backend,
 		Contract:     contract,
-		ContractAddr: address,
+		ContractAddr: config.Registry,
 	}, nil
 }
 
@@ -116,15 +107,15 @@ func (r *Registry) SetSubdomainOwner(opts *bind.TransactOpts, name string, subna
 }
 
 // RegistryContractAddress obtains the address of the registry contract for a chain.
-// This is (currently) the same for all chains.
+// Get the Registry contract address from config
 func RegistryContractAddress(backend bind.ContractBackend) (common.Address, error) {
-	// Instantiate the registry contract.  The same for all chains.
-	return common.HexToAddress("00000000000C2E074eC69A0dFb2997BA6C7d2e1e"), nil
+	// config := getConfig()
+	return config.Registry, nil
 }
 
 // RegistryContractFromRegistrar obtains the registry contract given an
 // existing registrar contract
-func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *auctionregistrar.Contract) (*registry.Contract, error) {
+func RegistryContractFromRegistrar(backend bind.ContractBackend, registrar *baseregistrar.Contract) (*registry.Contract, error) {
 	if registrar == nil {
 		return nil, errors.New("no registrar contract")
 	}

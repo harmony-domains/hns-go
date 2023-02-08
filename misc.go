@@ -1,4 +1,4 @@
-package hns
+package onens
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 )
 
 // DomainLevel calculates the level of the domain presented.
-// A top-level domain (e.g. 'eth') will be 0, a domain (e.g.
-// 'foo.eth') will be 1, a subdomain (e.g. 'bar.foo.eth' will
+// A top-level domain (e.g. 'country') will be 0, a domain (e.g.
+// 'foo.country') will be 1, a subdomain (e.g. 'bar.foo.country' will
 // be 2, etc.
 func DomainLevel(name string) (level int) {
 	return len(strings.Split(name, ".")) - 1
@@ -77,9 +77,10 @@ func Tld(domain string) string {
 
 // Domain obtains the domain of an ENS name, including subdomains.  It does this
 // by removing everything up to and including the first period.
-// For example, 'eth' will return ''
-//              'foo.eth' will return 'eth'
-//              'bar.foo.eth' will return 'foo.eth'
+// For example, 'country' will return ”
+//
+//	'foo.country' will return 'country'
+//	'bar.foo.country' will return 'foo.country'
 func Domain(domain string) string {
 	if idx := strings.IndexByte(domain, '.'); idx >= 0 {
 		return domain[idx+1:]
@@ -93,12 +94,13 @@ func Domain(domain string) string {
 // towards the lowest-level domain.
 // For example, with a domain bar.foo.com the following parts will be returned:
 // Number | part
-//      1 |  bar
-//      2 |  foo
-//      3 |  com
-//     -1 |  com
-//     -2 |  foo
-//     -3 |  bar
+//
+//	 1 |  bar
+//	 2 |  foo
+//	 3 |  com
+//	-1 |  com
+//	-2 |  foo
+//	-3 |  bar
 func DomainPart(domain string, part int) (string, error) {
 	if part == 0 {
 		return "", fmt.Errorf("invalid part")

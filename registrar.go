@@ -1,5 +1,4 @@
 // Copyright 2019 Weald Technology Trading
-// Modified December 2022: John Whitton https://github.com/john_whitton
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"fmt"

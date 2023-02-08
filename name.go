@@ -13,11 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
 	"crypto/rand"
-	"errors"
 	"fmt"
 	"math/big"
 	"time"
@@ -25,21 +24,22 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/pkg/errors"
 )
 
-// Name represents an ENS name, for example 'foo.bar.eth'.
+// Name represents an ENS name, for example 'foo.bar.country'.
 type Name struct {
 	backend bind.ContractBackend
-	// Name is the fully-qualified name of an ENS domain e.g. foo.bar.eth
+	// Name is the fully-qualified name of an ENS domain e.g. foo.bar.country
 	Name string
-	// Domain is the domain of an ENS domain e.g. bar.eth
+	// Domain is the domain of an ENS domain e.g. bar.country
 	Domain string
 	// Label is the name part of an ENS domain e.g. foo
 	Label string
 	// Contracts
 	registry   *Registry
 	registrar  *BaseRegistrar
-	controller *ETHController
+	controller *RegistrarController
 }
 
 // NewName creates an ENS name structure.
@@ -63,7 +63,7 @@ func NewName(backend bind.ContractBackend, name string) (*Name, error) {
 	if err != nil {
 		return nil, err
 	}
-	controller, err := NewETHController(backend, domain)
+	controller, err := NewRegistrarController(backend, domain)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (n *Name) RegistrationInterval() (time.Duration, error) {
 }
 
 // RegisterStageOne sends a transaction that starts the registration process.
-func (n *Name) RegisterStageOne(registrant common.Address, opts *bind.TransactOpts) (*types.Transaction, [32]byte, error) {
+func (n *Name) RegisterStageOne(registrant common.Address, duration *big.Int, opts *bind.TransactOpts) (*types.Transaction, [32]byte, error) {
 	var secret [32]byte
 	_, err := rand.Read(secret[:])
 	if err != nil {
@@ -144,7 +144,7 @@ func (n *Name) RegisterStageOne(registrant common.Address, opts *bind.TransactOp
 		return nil, secret, errors.New("name is already registered")
 	}
 
-	signedTx, err := n.controller.Commit(opts, n.Label, registrant, secret)
+	signedTx, err := n.controller.Commit(opts, n.Label, registrant, duration, secret)
 	return signedTx, secret, err
 }
 
@@ -153,8 +153,8 @@ func (n *Name) RegisterStageOne(registrant common.Address, opts *bind.TransactOp
 // The secret is that returned by RegisterStageOne.
 // At least RegistrationInterval() time must have passed since the stage one
 // transaction was mined for this to work.
-func (n *Name) RegisterStageTwo(registrant common.Address, secret [32]byte, opts *bind.TransactOpts) (*types.Transaction, error) {
-	commitTS, err := n.controller.CommitmentTime(n.Label, registrant, secret)
+func (n *Name) RegisterStageTwo(registrant common.Address, duration *big.Int, secret [32]byte, opts *bind.TransactOpts) (*types.Transaction, error) {
+	commitTS, err := n.controller.CommitmentTime(n.Label, registrant, duration, secret)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func (n *Name) RegisterStageTwo(registrant common.Address, secret [32]byte, opts
 		return nil, errors.New("too late to send second transaction")
 	}
 
-	return n.controller.Reveal(opts, n.Label, registrant, secret)
+	return n.controller.Reveal(opts, n.Label, registrant, duration, secret)
 }
 
 // Expires obtain the time at which the registration for this name expires.
@@ -225,7 +225,7 @@ func (n *Name) SetController(controller common.Address, opts *bind.TransactOpts)
 	if err != nil {
 		return nil, err
 	}
-	// Are we actually trying to reclaim?
+	// 	// Are we actually trying to reclaim?
 	if registrant == opts.From && opts.From == controller {
 		return n.Reclaim(opts)
 	}
@@ -248,6 +248,13 @@ func (n *Name) Reclaim(opts *bind.TransactOpts) (*types.Transaction, error) {
 
 // Registrant obtains the registrant for this name.
 func (n *Name) Registrant() (common.Address, error) {
+	owner, err := n.registry.Owner(n.Name)
+	if err != nil {
+		return zeroAddress, err
+	}
+	if owner == zeroAddress {
+		return owner, err
+	}
 	return n.registrar.Owner(n.Label)
 }
 
@@ -302,14 +309,4 @@ func (n *Name) Address(coinType uint64) ([]byte, error) {
 		return nil, err
 	}
 	return resolver.MultiAddress(coinType)
-}
-
-// SetAddress sets the address of the name for a given coin type.
-// Coin types are defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-func (n *Name) SetAddress(coinType uint64, address []byte, opts *bind.TransactOpts) (*types.Transaction, error) {
-	resolver, err := NewResolver(n.backend, n.Name)
-	if err != nil {
-		return nil, err
-	}
-	return resolver.SetMultiAddress(opts, coinType, address)
 }

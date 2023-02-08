@@ -1,5 +1,5 @@
 // Copyright 2019 Weald Technology Trading
-// Modified December 2022: John Whitton https://github.com/john_whitton
+// Modified January 2023: John Whitton https://github.com/john_whitton
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,19 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package hns
+package onens
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/harmony-domains/hns-go/contracts/baseregistrar"
-	"golang.org/x/crypto/sha3"
+	"github.com/jw-1ns/go-1ns/contracts/baseregistrar"
 )
 
 // BaseRegistrar is the structure for the registrar
@@ -47,6 +44,7 @@ func NewBaseRegistrar(backend bind.ContractBackend, domain string) (*BaseRegistr
 		return nil, fmt.Errorf("no registrar for domain %s", domain)
 	}
 
+	// contract, err := baseregistrar.NewContract(config.BaseRegistrar, backend)
 	contract, err := baseregistrar.NewContract(address, backend)
 	if err != nil {
 		return nil, err
@@ -68,56 +66,10 @@ func NewBaseRegistrar(backend bind.ContractBackend, domain string) (*BaseRegistr
 	}, nil
 }
 
-// PriorAuctionContract obtains the previous (auction) registrar contract
-func (r *BaseRegistrar) PriorAuctionContract() (*AuctionRegistrar, error) {
-	address, err := r.Contract.PreviousRegistrar(nil)
-	if err != nil {
-		// Means there is no prior registrar.
-		return nil, nil
-	}
-	auctionContract, err := NewAuctionRegistrarAt(r.backend, r.domain, address)
-	if err != nil {
-		return nil, errors.New("failed to instantiate prior auction contract")
-	}
-
-	// Confirm ths really is an auction contract by trying to create (but not submit) a bid
-	var shaBid [32]byte
-	var emptyHash [32]byte
-	sha := sha3.NewLegacyKeccak256()
-	if _, err := sha.Write(emptyHash[:]); err != nil {
-		return nil, err
-	}
-	if _, err := sha.Write(UnknownAddress.Bytes()); err != nil {
-		return nil, err
-	}
-	var amountBytes [32]byte
-	if _, err := sha.Write(amountBytes[:]); err != nil {
-		return nil, err
-	}
-	if _, err := sha.Write(emptyHash[:]); err != nil {
-		return nil, err
-	}
-	sha.Sum(shaBid[:0])
-
-	contractShaBid, err := auctionContract.ShaBid(emptyHash, UnknownAddress, big.NewInt(0), emptyHash)
-	if err != nil {
-		return nil, errors.New("failed to confirm auction contract")
-	}
-	if !bytes.Equal(contractShaBid[:], shaBid[:]) {
-		return nil, errors.New("failed to confirm auction contract")
-	}
-
-	return auctionContract, nil
-}
-
-// RegisteredWith returns one of "temporary", "permanent" or "none" for the
+// RegisteredWith returns "permanent" or "none" for the
 // registrar on which this name is registered
 func (r *BaseRegistrar) RegisteredWith(domain string) (string, error) {
-	name, err := UnqualifiedName(domain, r.domain)
-	if err != nil {
-		return "", err
-	}
-	// See if we're registered at all - fetch the owner to find out
+	// See if we're registered - fetch the owner to find out
 	registry, err := NewRegistry(r.backend)
 	if err != nil {
 		return "", err
@@ -125,21 +77,6 @@ func (r *BaseRegistrar) RegisteredWith(domain string) (string, error) {
 	owner, err := registry.Owner(domain)
 	if err != nil {
 		return "", err
-	}
-
-	// Fetch the temporary registrar and see if we're registered there
-	auctionRegistrar, err := r.PriorAuctionContract()
-	if err != nil {
-		return "", err
-	}
-	if auctionRegistrar != nil {
-		state, err := auctionRegistrar.State(name)
-		if err != nil {
-			return "", err
-		}
-		if state == "Won" || state == "Owned" {
-			return "temporary", nil
-		}
 	}
 
 	// No temporary registrar or no entry in same
