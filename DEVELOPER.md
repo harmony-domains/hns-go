@@ -94,8 +94,8 @@ view go-1ns docs at
 See [here](https://go.dev/doc/modules/publishing) and [here](https://go.dev/blog/publishing-go-modules).
 
 ```
-git tag v0.1.4
-git push origin v0.1.4
+git tag v0.1.5
+git push origin v0.1.5
 ```
 
 
