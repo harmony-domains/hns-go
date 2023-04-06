@@ -73,7 +73,7 @@ func TestConfig(t *testing.T) {
 	testxyzLabelHashBigInt := new(big.Int).SetBytes(testxyzLabelHash[:])
 	testxyzOwnerBaseRegistrar, err := baseRegistrar.OwnerOf(nil, testxyzLabelHashBigInt)
 	assert.Equal(t, err, nil, "Error getting testxyz owner from Registry")
-	assert.Equal(t, testxyzOwnerBaseRegistrar, zeroAddress, "Incorrect Owner for testxyz.country node")
+	assert.Equal(t, testxyzOwnerBaseRegistrar, tconfig.NameWrapper, "Incorrect Owner for testxyz.country node")
 
 	// unregistered Tier 2 have no owners
 	unregisteredNameHash, err := NameHash("unregistered.country")

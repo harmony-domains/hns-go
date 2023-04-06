@@ -62,15 +62,23 @@ go test -run TestConfig
 # go test -run TestA
 
 # Test miscellaneous tests
-go test -run TestNormaliseDomain
 go test -run "^TestNormaliseDomain"
+go test -run TestNormaliseDomain
 go test -run TestNormaliseDomainStrict
 go test -run TestTld
 go test -run TestDomainPart
 go test -run TestUnqualifiedName
 
 # Test name 
-go test -run "^TestName$"
+# go test -run "^TestName$"
+go test -run TestName
+
+# Test namehash
+go test -run TestNameHash
+go test -run TestLabelHash
+
+# Test registry
+go test -run TestResolve
 
 ```
 

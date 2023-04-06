@@ -65,7 +65,7 @@ func TestName(t *testing.T) {
 }
 
 func TestNameUnregistered(t *testing.T) {
-	name, err := NewName(tclient, "testxyz.country")
+	name, err := NewName(tclient, "testxyz1.country")
 	require.Nil(t, err, "Failed to create name")
 
 	registrant, err := name.Registrant()
