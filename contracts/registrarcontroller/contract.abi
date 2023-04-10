@@ -2,7 +2,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract BaseRegistrarImplementation",
+        "internalType": "contract TLDBaseRegistrarImplementation",
         "name": "_base",
         "type": "address"
       },
@@ -40,6 +40,11 @@
         "internalType": "string",
         "name": "_baseExtension",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_revenueAccount",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -222,6 +227,25 @@
       }
     ],
     "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "oldAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "PriceOracleChanged",
     "type": "event"
   },
   {
@@ -605,6 +629,19 @@
   },
   {
     "inputs": [],
+    "name": "revenueAccount",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "reverseRegistrar",
     "outputs": [
       {
@@ -614,6 +651,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IPriceOracle",
+        "name": "_prices",
+        "type": "address"
+      }
+    ],
+    "name": "setPrices",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

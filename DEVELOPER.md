@@ -26,10 +26,18 @@ Testing
 
 You will need to run a local ganche instance and deploy ens contracts and register sample domains for the tests to work
 
+This will [register the following domains](https://github.com/jw-1ns/ens-deployer/blob/main/contract/deploy/dnsSample.ts#LL133-L138C54)
+
+* await registerDomain('test', alice, '128.0.0.1')
+* await registerDomain('testa', alice, '128.0.0.2')
+* await registerDomain('testb', bob, '128.0.0.3')
+* await registerDomain('testlongdomain', bob, '128.0.0.4')
+* await registerDomain('testxyz', alice, '128.0.0.5')
+
 ```bash
 git clone https://github.com/jw-1ns/ens-deployer.git
 cd ens-deployer
-git checkout 1ns
+# git checkout 1ns
 
 # start local ganache in window 1
 cd env
@@ -50,6 +58,9 @@ To run all tests matching a prefix `go test -run TestName`
 To match a specific test `go test -run "^TestName$"`
 
 ```bash
+
+# Run all tests
+go test
 
 # Test configuration i.e. local ganache contracts are deployed correctly and expected domains have been registered
 
@@ -87,6 +98,13 @@ go test -run TestResolve
 ### Updating contract abis
 
 To update our contracts to the latest abi we can copy the abi from [ens-deployer](https://github.com/polymorpher/ens-deployer) and generate the contract.go file.
+
+Prerequiste:  [abigen](https://geth.ethereum.org/docs/tools/abigen) is needed, this can be installed by installing [geth](https://geth.ethereum.org/docs/getting-started/installing-geth) for example
+
+```bash
+brew tap ethereum/ethereum
+brew install ethereum
+```
 
 *Note: if adding a new contract we will also need to create a  contracts subdirectory with a `generate.go` file in the contracts subdirectory (e.g. dnsresolver folder)**
 
