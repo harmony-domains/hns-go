@@ -44,10 +44,10 @@ cd env
 ./ganache-new.sh
 
 # deploy the contracts in window 2
-cd contracts
+cd contract
 yarn install
 cp .env.sample .env
-yarn deploy-dns
+yarn dns-sample
 ```
 
 Running go tests
