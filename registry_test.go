@@ -64,7 +64,7 @@ func TestResolveTestCountry(t *testing.T) {
 // }
 
 func TestResolveResolverCountry(t *testing.T) {
-	expected := "caa29b65446abf1a513a178402a0408eb3aeee75"
+	expected := "c70292a68e8ca7aba20a55a29f31a8878e99ab00"
 	actual, err := Resolve(tclient, "resolver.country")
 	require.Nil(t, err, "Error resolving name")
 	assert.Equal(t, expected, hex.EncodeToString(actual[:]), "Did not receive expected result")
