@@ -182,6 +182,6 @@ See [here](https://go.dev/doc/modules/publishing) and [here](https://go.dev/blog
 Review the latest tag [here](https://github.com/jw-1ns/go-1ns/tags)
 
 ```bash
-git tag v0.1.6
-git push origin v0.1.6
+git tag v0.1.7
+git push origin v0.1.7
 ```
