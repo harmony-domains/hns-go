@@ -179,7 +179,9 @@ or specifically
 
 See [here](https://go.dev/doc/modules/publishing) and [here](https://go.dev/blog/publishing-go-modules).
 
+Review the latest tag [here](https://github.com/jw-1ns/go-1ns/tags)
+
 ```bash
-git tag v0.1.5
-git push origin v0.1.5
+git tag v0.1.6
+git push origin v0.1.6
 ```
