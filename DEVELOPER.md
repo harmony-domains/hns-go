@@ -1,5 +1,15 @@
 # Overview
 
+go-1ns provides an interaction layer between dot-country contracts and go. It's current focus is on registration and lookup of dot-country domains.
+
+TODO
+
+* review and removal of any unused config.go variables. Improve error handling when .env file does not exist.
+* Evaluate the use of contenhash we probably won't be using IPFS to store content such as DNS records. But may use something like [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) for storing blobs.
+* Implement DNS wire formatting in go similar to [node-dns-js](https://github.com/polymorpher/node-dns-js) see [dnsresolver.go](./dnsresolver.go) and [dns_resolver_test.go](./dnsresolver_test.go).
+* support apple silicon builds see [this article](https://dev.to/tidalcloud/how-to-cross-compile-go-app-for-apple-silicon-m1-27l6) and [this gist](https://github.com/polymorpher/node-dns-js) `GOOS=darwin GOARCH=arm64 go build -o hello-macos-arm64 hello.go`
+* Implement additonal contracts
+
 ## Development Approach
 
 For [coredns](https://github.com/coredns/coredns) we will build a pugin [coredns-1ns](https://github.com/jw-1ns/coredns-1ns) which interacts with [go-1ns](https://github.com/jw-1ns/go-1ns) leveraging code from [go-ens](https://github.com/wealdtech/go-ens) and [coredns-ens](https://github.com/wealdtech/coredns-ens). [go-1ns](https://github.com/jw-1ns/go-1ns) will have a focus of looking up dns entries using the PubliceRsolver and Registry contracts. We will also create Registrarcontroller for testing registering of domains. Code not needed for retrieval of DNS entries will be omitted from the initial release, this includes IPFS support, auctions, deeds and other miscellaneous items.
